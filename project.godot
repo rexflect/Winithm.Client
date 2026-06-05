@@ -1,0 +1,86 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="Winithm"
+run/enable_alt_space_menu=true
+config/features=PackedStringArray("4.7", "C#", "GL Compatibility")
+boot_splash/bg_color=Color(0.14117648, 0.14117648, 0.14117648, 0)
+config/icon="res://icon.svg"
+
+[audio]
+
+buses/default_bus_layout=""
+driver/output_latency=10
+driver/output_latency.web=25
+
+[debug]
+
+file_logging/enable_file_logging=true
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/size/mode=2
+window/size/borderless=true
+window/size/transparent=true
+window/subwindows/embed_subwindows=false
+window/per_pixel_transparency/allowed=true
+window/vsync/vsync_mode=0
+
+[dotnet]
+
+project/assembly_name="Winithm.Client"
+
+[editor]
+
+naming/default_signal_callback_name="On{NodeName}{SignalName}"
+naming/default_signal_callback_to_self_name="On{SignalName}"
+naming/scene_name_casing=1
+naming/script_name_casing=1
+
+[input_devices]
+
+joypads/ignore_joypad_on_unfocused_application=true
+pointing/emulate_touch_from_mouse=true
+
+[internationalization]
+
+locale/include_text_server_data=true
+
+[physics]
+
+2d/run_on_separate_thread=true
+3d/run_on_separate_thread=true
+3d/physics_engine="Jolt Physics"
+common/physics_interpolation=true
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
+rendering_device/driver.windows="d3d12"
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_s3tc_bptc=true
+lights_and_shadows/directional_shadow/size=2048
+lights_and_shadows/directional_shadow/size.mobile=1024
+2d/shadow_atlas/size=1024
+reflections/sky_reflections/ggx_samples=16
+reflections/sky_reflections/ggx_samples.mobile=8
+reflections/sky_reflections/fast_filter_high_quality=true
+global_illumination/gi/use_half_resolution=true
+environment/ssao/quality=1
+environment/ssil/quality=1
+anti_aliasing/quality/msaa_2d=1
+anti_aliasing/quality/msaa_3d=1
+global_illumination/sdfgi/frames_to_converge=3
+viewport/transparent_background=true
