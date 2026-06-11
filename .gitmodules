@@ -1,0 +1,6 @@
+[submodule "Winithm.Core"]
+	path = Winithm.Core
+	url = https://github.com/rexflect/Winithm.Core
+[submodule "Winithm.Assets"]
+	path = Winithm.Assets
+	url = https://github.com/rexflect/Winithm.Assets
