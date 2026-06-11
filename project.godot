@@ -22,6 +22,10 @@ buses/default_bus_layout=""
 driver/output_latency=10
 driver/output_latency.web=25
 
+[autoload]
+
+ResourcePackManager="*uid://cekjp7dyw42rc"
+
 [debug]
 
 file_logging/enable_file_logging=true
