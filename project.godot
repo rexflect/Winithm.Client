@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="Winithm"
+run/main_scene="uid://k6l8l50pbqyd"
 run/enable_alt_space_menu=true
 config/features=PackedStringArray("4.7", "C#", "GL Compatibility")
 boot_splash/bg_color=Color(0.14117648, 0.14117648, 0.14117648, 0)
@@ -25,6 +26,7 @@ driver/output_latency.web=25
 [autoload]
 
 ResourcePackManager="*uid://cekjp7dyw42rc"
+DesktopManager="*uid://beomho66prn1t"
 
 [debug]
 

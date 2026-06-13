@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://nlhlt66a0i8b"]
+
+[ext_resource type="PackedScene" uid="uid://ddn2g8cglw2th" path="res://Winithm.Client/Scenes/Gameplay/Player.tscn" id="1_3jnpq"]
+
+[node name="PlayerWrapper" type="Control" unique_id=834605885]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PlayerArea" type="Control" parent="." unique_id=885160611]
+clip_contents = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Player" parent="PlayerArea" unique_id=944133150 instance=ExtResource("1_3jnpq")]
+layout_mode = 1

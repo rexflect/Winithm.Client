@@ -1,0 +1,76 @@
+[gd_scene format=3 uid="uid://ddn2g8cglw2th"]
+
+[ext_resource type="PackedScene" uid="uid://cgmiyt6dy1hid" path="res://Winithm.Core/Scenes/GameplayUI.tscn" id="1_dwjgf"]
+[ext_resource type="FontFile" uid="uid://c0iwxwt13dk8u" path="res://Winithm.Core/Resources/Fonts/Quicksand.ttf" id="2_byqyu"]
+
+[node name="Player" type="Control" unique_id=944133150]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ControllerRack" type="Node" parent="." unique_id=563799367]
+
+[node name="CaptureUserDesktop" type="TextureRect" parent="." unique_id=1897512421]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ObjectLayer" type="Control" parent="." unique_id=1138206735]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HitFXLayer" type="Control" parent="." unique_id=208295408]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="InnerShaderLayer" type="Control" parent="." unique_id=204929108]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GameplayUI" parent="." unique_id=1473560799 instance=ExtResource("1_dwjgf")]
+layout_mode = 1
+
+[node name="OuterShaderLayer" type="Control" parent="." unique_id=639596532]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Debug" type="Label" parent="." unique_id=2092607017]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -23.0
+offset_right = 20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("2_byqyu")
+theme_override_font_sizes/font_size = 14
+text = "Debug Mode"
+horizontal_alignment = 1
+vertical_alignment = 1

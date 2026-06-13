@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://k6l8l50pbqyd"]
+
+[ext_resource type="Script" uid="uid://dxatowlws3j3d" path="res://Winithm.Client/Scripts/Managers/WindowManager.cs" id="1_5oh3a"]
+[ext_resource type="PackedScene" uid="uid://nlhlt66a0i8b" path="res://Winithm.Client/Scenes/Gameplay/PlayerWrapper.tscn" id="1_5y2vr"]
+
+[node name="Desktop" type="CanvasLayer" unique_id=844740044]
+script = ExtResource("1_5oh3a")
+
+[node name="DesktopEnviroment" type="Control" parent="." unique_id=244639133]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DesktopBorder" type="Control" parent="." unique_id=391136310]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="PlayerWrapper" parent="." unique_id=834605885 instance=ExtResource("1_5y2vr")]
