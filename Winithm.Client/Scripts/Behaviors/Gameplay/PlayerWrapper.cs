@@ -16,8 +16,8 @@ public partial class PlayerWrapper : Control
   public override void _Ready()
   {
     _gameArea = GetNodeOrNull<Control>("PlayerArea");
-
-    ItemRectChanged += ApplyAspectMode;
+    Resized += ApplyAspectMode;
+    ApplyAspectMode();
   }
 
   public void SetAspectMode(GameplayAspectMode mode)
