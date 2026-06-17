@@ -14,13 +14,4 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="DesktopBorder" type="Control" parent="." unique_id=391136310]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 1
-
 [node name="PlayerWrapper" parent="." unique_id=834605885 instance=ExtResource("1_5y2vr")]
