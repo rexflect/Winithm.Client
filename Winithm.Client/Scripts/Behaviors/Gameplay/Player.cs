@@ -1,5 +1,4 @@
 using Godot;
-using System;
 using Winithm.Core.Common;
 using Winithm.Core.Controllers;
 using Winithm.Core.Data;
@@ -86,10 +85,7 @@ public partial class Player : Control
 
     TickClock(delta);
 
-    if (_inputController is not null)
-    {
-      _inputController.IsInputEnabled = !Autoplay && _pausePhase == PausePhase.Idle && _audioController.IsPlaying;
-    }
+    _inputController?.IsInputEnabled = !Autoplay && _pausePhase == PausePhase.Idle && _audioController.IsPlaying;
 
     // ── Per-frame gameplay updates ────────────────────────────────────────────
 
@@ -104,7 +100,10 @@ public partial class Player : Control
       $"Beat: {currentBeat:F2}\n"
       + $"FPS: {Engine.GetFramesPerSecond()} | Frame: {delta * 1000:F2}ms | Vsync: {(DisplayServer.WindowGetVsyncMode() == DisplayServer.VSyncMode.Enabled ? "On" : "Off")}";
 
-    _windowController?.ScreenSize = DisplayServer.WindowGetSize();
+
+    var displaySize = DisplayServer.WindowGetSize();
+
+    _windowController?.ScreenSize = displaySize;
     _windowController?.PlayerAreaSize = Size;
     _windowController?.Update(currentBeat);
 
@@ -116,7 +115,7 @@ public partial class Player : Control
     UpdateScore(currentBeat);
     _componentController?.SongProgressPercent =
       length > 0 ? (float)(_audioController.CurrentTime / length) : 0f;
-    _componentController?.ScreenSize = DisplayServer.WindowGetSize();
+    _componentController?.ScreenSize = displaySize;
     _componentController?.Update(currentBeat);
   }
 
