@@ -12,7 +12,7 @@
 
 <p>
   <a href="https://github.com/Nekitori17/Winithm/releases"><img src="https://img.shields.io/github/v/release/Nekitori17/Winithm?style=flat-square" alt="Release"></a>
-  <a href="https://godotengine.org/"><img src="https://img.shields.io/badge/Engine-Godot%204.7%20Mono-478cbf?style=flat-square&logo=godot-engine&logoColor=white" alt="Godot Version"></a>
+  <a href="https://godotengine.org/"><img src="https://img.shields.io/badge/Engine-Godot%204.7%20%2ENET-478cbf?style=flat-square&logo=godot-engine&logoColor=white" alt="Godot Version"></a>
   <a href="#"><img src="https://img.shields.io/badge/Language-C%23-239120?style=flat-square&logo=c-sharp&logoColor=white" alt="Language"></a>
   <img src="https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey?style=flat-square" alt="Platform">
   <a href="LICENSE"><img src="https://img.shields.io/github/license/Nekitori17/Winithm?style=flat-square" alt="License"></a>
