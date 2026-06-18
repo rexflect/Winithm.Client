@@ -104,7 +104,5 @@ reflections/sky_reflections/fast_filter_high_quality=true
 global_illumination/gi/use_half_resolution=true
 environment/ssao/quality=1
 environment/ssil/quality=1
-anti_aliasing/quality/msaa_2d=1
-anti_aliasing/quality/msaa_3d=1
 global_illumination/sdfgi/frames_to_converge=3
 viewport/transparent_background=true
