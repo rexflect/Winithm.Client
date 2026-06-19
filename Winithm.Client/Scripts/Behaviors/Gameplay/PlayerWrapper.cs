@@ -54,13 +54,13 @@ public partial class PlayerWrapper : Control
           targetH = containerSize.X / AspectRatio;
         }
 
-        _gameArea?.Size = new Vector2(targetW, targetH);
-        _gameArea?.Position = (containerSize - _gameArea.Size) * 0.5f;
+        _gameArea?.SetDeferred("size", new Vector2(targetW, targetH));
+        _gameArea?.SetDeferred("position", (containerSize - new Vector2(targetW, targetH)) * 0.5f);
         break;
 
       case GameplayAspectMode.Expand:
-        _gameArea?.Position = Vector2.Zero;
-        _gameArea?.Size = containerSize;
+        _gameArea?.SetDeferred("position", Vector2.Zero);
+        _gameArea?.SetDeferred("size", containerSize);
         break;
     }
 
