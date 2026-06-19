@@ -2,7 +2,6 @@
 
 [ext_resource type="PackedScene" uid="uid://ddn2g8cglw2th" path="res://Winithm.Client/Scenes/Gameplay/Player.tscn" id="1_3jnpq"]
 [ext_resource type="Script" uid="uid://ciiikp2lrhivj" path="res://Winithm.Client/Scripts/Behaviors/Gameplay/PlayerWrapper.cs" id="1_j8gqg"]
-[ext_resource type="Script" uid="uid://1q8yhia4thp7" path="res://Winithm.Client/Scripts/Behaviors/Gameplay/PlayerArea.cs" id="2_6kvkm"]
 [ext_resource type="Script" uid="uid://w1s70263vurc" path="res://Winithm.Client/Scripts/Behaviors/Gameplay/Player.cs" id="4_ci7ib"]
 
 [node name="PlayerWrapper" type="Control" unique_id=834605885]
@@ -22,7 +21,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("2_6kvkm")
 
 [node name="Player" parent="PlayerArea" unique_id=944133150 instance=ExtResource("1_3jnpq")]
 layout_mode = 1

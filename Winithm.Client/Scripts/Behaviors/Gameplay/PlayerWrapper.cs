@@ -16,8 +16,22 @@ public partial class PlayerWrapper : Control
   public override void _Ready()
   {
     _gameArea = GetNodeOrNull<Control>("PlayerArea");
+    _gameArea?.Draw += DrawBorder;
+
     Resized += ApplyAspectMode;
+
     ApplyAspectMode();
+  }
+
+  private void DrawBorder()
+  {
+    _gameArea?.DrawRect(
+        new Rect2(Vector2.Zero, _gameArea.Size),
+        Colors.Cyan,
+        false,
+        2.0f,
+        true
+    );
   }
 
   public void SetAspectMode(GameplayAspectMode mode)
@@ -64,6 +78,7 @@ public partial class PlayerWrapper : Control
         break;
     }
 
-    _gameArea?.QueueRedraw();
+    // Yêu cầu vẽ lại chính PlayerWrapper thay vì gọi lên _gameArea
+    QueueRedraw();
   }
 }
