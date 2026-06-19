@@ -187,7 +187,7 @@ public partial class HitController : Node
     bool dragActive = _noteController.Autoplay || IsDragActive(_audioController?.CurrentBeat ?? 0);
     if (!dragActive) return;
 
-    var result = HitResult.DragHit(note, elapsedMs);
+    var result = HitResult.FromBinary(note, elapsedMs);
     if (result.IsHit)
     {
       note.IsEvaluated = true;
