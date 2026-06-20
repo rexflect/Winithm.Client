@@ -12,7 +12,7 @@ public partial class InputController : Node
 {
   public bool IsInputEnabled { get; set; } = true;
 
-  public event Action<InputEventKey>? OnFocusKeyPressed;
+  public event Action<InputEventMouseButton>? OnFocusKeyPressed;
   public event Action<string>? OnFocusInput;
   public event Action<string>? OnCloseInput;
   public event Action<InputEventKey>? OnNormalKeyPressed;
@@ -36,17 +36,10 @@ public partial class InputController : Node
     if (!IsInputEnabled || @event is not InputEventKey { Echo: false } keyEvent)
       return;
 
-    if (InputMap.HasAction("FocusNoteKey") && keyEvent.IsAction("FocusNoteKey"))
-    {
-      if (keyEvent.Pressed) OnFocusKeyPressed?.Invoke(keyEvent);
-    }
-    else
-    {
-      if (keyEvent.Pressed)
-        OnNormalKeyPressed?.Invoke(keyEvent);
-      else
-        OnKeyReleased?.Invoke(keyEvent);
-    }
+    if (keyEvent.IsPressed())
+      OnNormalKeyPressed?.Invoke(keyEvent);
+    else if (keyEvent.IsReleased())
+      OnKeyReleased?.Invoke(keyEvent);
   }
 
   public override void _Input(InputEvent @event)
@@ -62,7 +55,11 @@ public partial class InputController : Node
 
     if (@event is InputEventMouseButton mouseButtonEvent)
     {
-      if (mouseButtonEvent.ButtonIndex == MouseButton.Left)
+      if (mouseButtonEvent.ButtonIndex == MouseButton.Middle && mouseButtonEvent.Pressed)
+      {
+        OnFocusKeyPressed?.Invoke(mouseButtonEvent);
+      }
+      else if (mouseButtonEvent.ButtonIndex == MouseButton.Left)
       {
         if (mouseButtonEvent.Pressed)
         {
@@ -88,10 +85,10 @@ public partial class InputController : Node
     else if (@event is InputEventMouseMotion mouseMotionEvent && _isLeftMouseHeld)
     {
       var targetWindowIds = _windowController.GetListWindowIdsAtMousePosition(mouseMotionEvent.GlobalPosition);
-      
+
       var currentMotion = mouseMotionEvent.Relative;
       bool isSignificantMotion = currentMotion.LengthSquared() > MOTION_THRESHOLD;
-      
+
       foreach (var windowId in targetWindowIds)
       {
         bool isNewHover = !_hoveredWindowIds.Contains(windowId);
@@ -120,7 +117,7 @@ public partial class InputController : Node
           }
         }
       }
-      
+
       _hoveredWindowIds = targetWindowIds;
     }
   }

@@ -72,7 +72,7 @@ public partial class HitController : Node
   }
 
   /// <summary>Called when Focus key is pressed to clear focusable state.</summary>
-  public void HandleFocusClear(InputEventKey @event)
+  public void HandleFocusClear(InputEventMouseButton mouseButtonEvent)
   {
     if (!IsInstanceValid(_audioController))
     {
@@ -133,18 +133,15 @@ public partial class HitController : Node
       return true;
     }
 
-    if (!IsInstanceValid(_audioController)
-      || _audioController?.Metronome is null)
+    if (!IsInstanceValid(_audioController) || _audioController?.Metronome is null)
     {
       GD.PushWarning("[HitController] _audioController or _audioController.Metronome is not initialized!");
       return false;
     }
 
-    if (_lastMouseOutBeat[windowId] > double.MinValue)
+    if (_lastMouseOutBeat.TryGetValue(windowId, out double lastBeat) && lastBeat > double.MinValue)
     {
-      double elapsedMs = _audioController.Metronome.ToDeltaMilliSeconds(
-        _lastMouseOutBeat[windowId], currentBeat
-      );
+      double elapsedMs = _audioController.Metronome.ToDeltaMilliSeconds(lastBeat, currentBeat);
       return elapsedMs <= Constants.HitResult.TimmingWindowMs[HitResultType.Bad];
     }
 
