@@ -145,7 +145,7 @@ public partial class HitController : Node
       double elapsedMs = _audioController.Metronome.ToDeltaMilliSeconds(
         _lastMouseOutBeat[windowId], currentBeat
       );
-      return elapsedMs <= Constants.HitResult.TimmingWindowMs[HitResultType.Good];
+      return elapsedMs <= Constants.HitResult.TimmingWindowMs[HitResultType.Bad];
     }
 
     return false;
@@ -361,7 +361,6 @@ public partial class HitController : Node
     }
 
     double currentBeat = _audioController.CurrentBeat ?? 0;
-    double goodWindowMs = Constants.HitResult.TimmingWindowMs[HitResultType.Good];
 
     var activeHolds = GetActiveHolds();
 
@@ -375,7 +374,7 @@ public partial class HitController : Node
       ) ?? 0;
 
       // If the hold is about to end within Good window, let it complete naturally
-      if (remainingMs <= goodWindowMs) continue;
+      if (remainingMs <= Constants.HitResult.TimmingWindowMs[HitResultType.Bad]) continue;
 
       // Early release → miss
       note.IsEvaluated = true;
