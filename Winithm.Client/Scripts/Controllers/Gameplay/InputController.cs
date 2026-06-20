@@ -20,7 +20,11 @@ public partial class InputController : Node
 
   private WindowController? _windowController;
   private List<string> _hoveredWindowIds = [];
+  private readonly Dictionary<string, Vector2> _windowSwipeDirs = [];
   private bool _isLeftMouseHeld = false;
+
+  public static readonly float DIRECTION_CHANGE_ANGLE_THRESHOLD = 45f;
+  public static readonly float MOTION_THRESHOLD = 25.0f;
 
   public void Initialize(WindowController windowController)
   {
@@ -71,6 +75,7 @@ public partial class InputController : Node
         {
           _isLeftMouseHeld = false;
           _hoveredWindowIds.Clear();
+          _windowSwipeDirs.Clear();
         }
       }
       else if (mouseButtonEvent.ButtonIndex == MouseButton.Right && mouseButtonEvent.Pressed)
@@ -84,11 +89,35 @@ public partial class InputController : Node
     {
       var targetWindowIds = _windowController.GetListWindowIdsAtMousePosition(mouseMotionEvent.GlobalPosition);
       
+      var currentMotion = mouseMotionEvent.Relative;
+      bool isSignificantMotion = currentMotion.LengthSquared() > MOTION_THRESHOLD;
+      
       foreach (var windowId in targetWindowIds)
       {
-        if (!_hoveredWindowIds.Contains(windowId))
+        bool isNewHover = !_hoveredWindowIds.Contains(windowId);
+        bool isDirectionChange = false;
+
+        if (!isNewHover && isSignificantMotion)
+        {
+          var currentDir = currentMotion.Normalized();
+          if (_windowSwipeDirs.TryGetValue(windowId, out var lastDir))
+          {
+            // If angle between last direction and current is > 45 degrees
+            if (currentDir.Dot(lastDir) < MathF.Cos(Mathf.DegToRad(DIRECTION_CHANGE_ANGLE_THRESHOLD)))
+            {
+              isDirectionChange = true;
+            }
+          }
+          _windowSwipeDirs[windowId] = currentDir;
+        }
+
+        if (isNewHover || isDirectionChange)
         {
           OnFocusInput?.Invoke(windowId);
+          if (isNewHover && isSignificantMotion)
+          {
+            _windowSwipeDirs[windowId] = currentMotion.Normalized();
+          }
         }
       }
       
