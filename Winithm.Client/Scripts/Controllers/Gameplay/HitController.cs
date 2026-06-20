@@ -33,7 +33,7 @@ public partial class HitController : Node
   private WindowController? _windowController;
 
   private int _keysHeldCount = 0;
-  private double _lastKeyReleaseBeat = double.MinValue;
+  private readonly Dictionary<string, double> _lastMouseOutBeat = [];
 
   private readonly Dictionary<NoteData, long> _lastHoldTickIndex = [];
 
@@ -71,8 +71,8 @@ public partial class HitController : Node
     ProcessSingleHit(currentBeat);
   }
 
-  /// <summary>Called when Left Shift (Focus) is pressed.</summary>
-  public void OnFocusKeyPressed(InputEventKey @event)
+  /// <summary>Called when Focus key is pressed to clear focusable state.</summary>
+  public void HandleFocusClear(InputEventKey @event)
   {
     if (!IsInstanceValid(_audioController))
     {
@@ -81,36 +81,27 @@ public partial class HitController : Node
     }
 
     double currentBeat = _audioController?.CurrentBeat ?? 0;
-
-    // End focusable state on all currently-focusable windows
     EndAllActiveFocusable(currentBeat);
-
-    // Try to hit Focus notes
-    ProcessBroadcastHit(NoteType.Focus, currentBeat);
   }
 
-  /// <summary>Called when Right Shift (Close) is pressed.</summary>
-  public void OnCloseKeyPressed(InputEventKey @event)
+  public void HandleFocusInput(string windowId)
   {
-    if (!IsInstanceValid(_audioController))
-    {
-      GD.PushWarning("[HitController] _audioController is not initialized!");
-      return;
-    }
-
+    if (!IsInstanceValid(_audioController)) return;
     double currentBeat = _audioController?.CurrentBeat ?? 0;
-    ProcessBroadcastHit(NoteType.Close, currentBeat);
+    ProcessFocusHit(windowId, currentBeat);
+  }
+
+  public void HandleCloseInput(string windowId)
+  {
+    if (!IsInstanceValid(_audioController)) return;
+    double currentBeat = _audioController?.CurrentBeat ?? 0;
+    ProcessCloseHit(windowId, currentBeat);
   }
 
   /// <summary>Called when any gameplay key is released.</summary>
   public void OnKeyReleased(InputEventKey @event)
   {
     _keysHeldCount = Math.Max(0, _keysHeldCount - 1);
-
-    if (IsInstanceValid(_audioController))
-      _lastKeyReleaseBeat = _audioController.CurrentBeat ?? double.MinValue;
-    else
-      GD.PushWarning("[HitController] _audioController is not initialized!");
 
 
     // If all keys released, check for early hold releases
@@ -126,8 +117,22 @@ public partial class HitController : Node
   /// Called each frame. Handles drag auto-hit when a key is held
   /// or within Good timing window (125ms) after release.
   /// </summary>
-  public bool IsDragActive(double currentBeat)
+  public bool IsDragActive(string windowId, double currentBeat)
   {
+    if (!IsInstanceValid(_windowController))
+    {
+      GD.PushWarning("[HitController] _windowController is not initialized!");
+      return false;
+    }
+
+    var mousePos = GetViewport().GetMousePosition();
+
+    if (_windowController.IsMouseOverWindowId(windowId, mousePos))
+    {
+      _lastMouseOutBeat[windowId] = currentBeat;
+      return true;
+    }
+
     if (!IsInstanceValid(_audioController)
       || _audioController?.Metronome is null)
     {
@@ -135,12 +140,10 @@ public partial class HitController : Node
       return false;
     }
 
-    if (_keysHeldCount > 0) return true;
-
-    if (_lastKeyReleaseBeat > double.MinValue)
+    if (_lastMouseOutBeat[windowId] > double.MinValue)
     {
       double elapsedMs = _audioController.Metronome.ToDeltaMilliSeconds(
-        _lastKeyReleaseBeat, currentBeat
+        _lastMouseOutBeat[windowId], currentBeat
       );
       return elapsedMs <= Constants.HitResult.TimmingWindowMs[HitResultType.Good];
     }
@@ -178,14 +181,16 @@ public partial class HitController : Node
   /// <summary>Fired by NoteController when a Drag note enters judgement zone.</summary>
   public void HandleDragReady(string windowId, NoteData note, double elapsedMs)
   {
-    if (!IsInstanceValid(_noteController))
+    if (!IsInstanceValid(_noteController)
+      || _audioController?.CurrentBeat is null)
     {
-      GD.PushWarning("[HitController] _noteController is not initialized!");
+      GD.PushWarning("[HitController] _noteController or _audioController.Metronome is not initialized!");
       return;
     }
 
-    bool dragActive = _noteController.Autoplay || IsDragActive(_audioController?.CurrentBeat ?? 0);
-    if (!dragActive) return;
+    double currentBeat = _audioController.CurrentBeat.Value;
+    
+    if (!IsDragActive(windowId, currentBeat)) return;
 
     var result = HitResult.FromBinary(note, elapsedMs);
     if (result.IsHit)
@@ -308,25 +313,36 @@ public partial class HitController : Node
     }
   }
 
-  /// <summary>
-  /// Broadcast hit: evaluates ALL notes of the given type across ALL windows.
-  /// Used for Focus and Close notes.
-  /// </summary>
-  private void ProcessBroadcastHit(NoteType type, double currentBeat)
+  private void ProcessFocusHit(string windowId, double currentBeat)
   {
-    var results = TryEvaluateAll(type, currentBeat);
-
-    foreach (var (WindowId, Note, OffsetMs) in results)
+    var focusNotes = FindFocusNotesInWindow(windowId, currentBeat);
+    
+    foreach (var (side, note, offsetMs) in focusNotes)
     {
-      var result = HitResult.FromOffset(Note, OffsetMs);
-
+      var result = HitResult.FromBinary(note, offsetMs);
       if (result.IsHit)
       {
-        Note.IsEvaluated = true;
-        _noteController?.ConsumeNote(WindowId, Note);
-        OnHit?.Invoke(WindowId, result);
+        note.IsEvaluated = true;
+        _noteController?.ConsumeNote(windowId, note);
+        OnHit?.Invoke(windowId, result);
+        OnHitResponseRequested?.Invoke(windowId, note, result, true);
+      }
+    }
+  }
 
-        OnHitResponseRequested?.Invoke(WindowId, Note, result, true);
+  private void ProcessCloseHit(string windowId, double currentBeat)
+  {
+    var closeNote = FindCloseNoteInWindow(windowId, currentBeat);
+    if (closeNote.HasValue)
+    {
+      var (note, offsetMs) = closeNote.Value;
+      var result = HitResult.FromOffset(note, offsetMs);
+      if (result.IsHit)
+      {
+        note.IsEvaluated = true;
+        _noteController?.ConsumeNote(windowId, note);
+        OnHit?.Invoke(windowId, result);
+        OnHitResponseRequested?.Invoke(windowId, note, result, true);
       }
     }
   }

@@ -62,7 +62,7 @@ public partial class Player : Control
     _componentController = GetNodeOrNull<ComponentController>("GameplayUI");
     _debug = GetNodeOrNull<Label>("Debug");
 
-    SetAutoPlay(true);
+    SetAutoPlay(false);
     SetNoteSize(1.5f);
     SetNoteSpeed(10f);
     SetNoteHighLightSimulation(true);
@@ -213,8 +213,9 @@ public partial class Player : Control
 
     // ── Wire Input to HitController using Method Groups ───────────────────────
     // Routing validated hardware events directly to the evaluator.
-    _inputController.OnFocusKeyPressed += _hitController.OnFocusKeyPressed;
-    _inputController.OnCloseKeyPressed += _hitController.OnCloseKeyPressed;
+    _inputController.OnFocusKeyPressed += _hitController.HandleFocusClear;
+    _inputController.OnFocusInput += _hitController.HandleFocusInput;
+    _inputController.OnCloseInput += _hitController.HandleCloseInput;
     _inputController.OnNormalKeyPressed += _hitController.OnNormalKeyPressed;
     _inputController.OnKeyReleased += _hitController.OnKeyReleased;
 
@@ -303,7 +304,15 @@ public partial class Player : Control
       _chartData.SongMetaData, _chartData.ChartMetadata
     );
 
-    if (IsInstanceValid(_audioController) && IsInstanceValid(_noteController) && IsInstanceValid(_windowController))
+    if (IsInstanceValid(_windowController))
+      _inputController?.Initialize(_windowController);
+    else
+      GD.PushError("[Player] Failed to initialize InputController.");
+
+    if (IsInstanceValid(_audioController) 
+        && IsInstanceValid(_noteController) 
+        && IsInstanceValid(_windowController)
+    )
       _hitController?.Initialize(_audioController, _noteController, _windowController);
     else
       GD.PushError("[Player] Failed to initialize HitController.");
