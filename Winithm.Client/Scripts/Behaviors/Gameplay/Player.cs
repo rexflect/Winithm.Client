@@ -295,7 +295,7 @@ public partial class Player : Control
         _objectsLayer, _chartData.Windows, metronome,
         _groupController, _themeController, _noteController
       );
-      _windowController?.SetWindowMode(WindowMode.Editor);
+      _windowController?.SetWindowMode(WindowMode.InGame);
     }
     else
       GD.PushError("[Player] Failed to initialize WindowController.");
