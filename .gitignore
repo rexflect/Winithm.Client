@@ -21,3 +21,5 @@ data_*/
 mono_crash.*.json
 
 .codegraph/
+
+.build/
