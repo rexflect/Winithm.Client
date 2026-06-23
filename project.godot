@@ -81,7 +81,6 @@ common/physics_interpolation=true
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0
-rendering_device/driver="opengl3"
 rendering_device/driver.windows="d3d12"
 textures/vram_compression/import_s3tc_bptc=true
 lights_and_shadows/directional_shadow/size=2048
