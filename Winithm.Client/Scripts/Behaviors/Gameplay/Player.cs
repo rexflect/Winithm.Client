@@ -5,7 +5,7 @@ using Winithm.Core.Data;
 using Winithm.Core.Logic;
 using Winithm.Core.Managers;
 using Winithm.Client.Controllers.Gameplay;
-
+using Winithm.Native;
 namespace Winithm.Client.Behaviors.Gameplay;
 
 /// <summary>
@@ -52,6 +52,10 @@ public partial class Player : Control
 
   public static readonly string LEVEL_DIR = "res://Winithm.Assets/Levels";
 
+
+  private IPlatformProvider _platform = PlatformProviderFactory.Create();
+  private Color? AccentColor => _platform.GetAccentColor();
+
   // ── Godot lifecycle ──────────────────────────────────────────────────────────
 
   public override void _Ready()
@@ -68,6 +72,10 @@ public partial class Player : Control
     SetNoteHighLightSimulation(true);
 
     InitializeControllers();
+
+    if (AccentColor is not null)
+      _componentController?.BgStripeColor = AccentColor.Value;
+
     LoadDemoLevel();
   }
 
@@ -296,6 +304,9 @@ public partial class Player : Control
         _groupController, _themeController, _noteController
       );
       _windowController?.SetWindowMode(WindowMode.InGame);
+
+      if (AccentColor is not null)
+        _windowController?.TitleBarColor = AccentColor.Value;
     }
     else
       GD.PushError("[Player] Failed to initialize WindowController.");
