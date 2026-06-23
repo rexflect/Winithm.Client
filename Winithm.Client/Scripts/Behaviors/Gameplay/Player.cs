@@ -74,7 +74,7 @@ public partial class Player : Control
     InitializeControllers();
 
     if (AccentColor is not null)
-      _componentController?.BgStripeColor = AccentColor.Value;
+      _componentController?.BgStripeColor = AccentColor.Value with { A = 1f };
 
     LoadDemoLevel();
   }
@@ -306,7 +306,7 @@ public partial class Player : Control
       _windowController?.SetWindowMode(WindowMode.InGame);
 
       if (AccentColor is not null)
-        _windowController?.TitleBarColor = AccentColor.Value;
+        _windowController?.TitleBarColor = AccentColor.Value with { A = 1f };
     }
     else
       GD.PushError("[Player] Failed to initialize WindowController.");
