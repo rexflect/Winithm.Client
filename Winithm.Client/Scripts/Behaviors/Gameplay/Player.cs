@@ -72,10 +72,6 @@ public partial class Player : Control
     SetNoteHighLightSimulation(true);
 
     InitializeControllers();
-
-    if (AccentColor is not null)
-      _componentController?.BgStripeColor = AccentColor.Value with { A = 1f };
-
     LoadDemoLevel();
   }
 
@@ -183,6 +179,12 @@ public partial class Player : Control
   {
     _audioController = new AudioController() { Name = "AudioController" };
     _controllerRack?.AddChild(_audioController);
+
+    if (AccentColor is not null)
+    {
+      _componentController?.BgStripeColor = AccentColor.Value with { A = 1f };
+      _componentController?.UpdateColor();
+    }
 
     _groupController = new GroupController() { Name = "GroupController" };
     _controllerRack?.AddChild(_groupController);
