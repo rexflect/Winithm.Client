@@ -10,7 +10,7 @@ namespace Winithm.Client.Controllers.Gameplay;
 /// </summary>
 public partial class InputController : Node
 {
-  public bool IsInputEnabled { get; set; } = true;
+  public bool IsInputEnabled { get; set { field = value; _heldKeys.Clear(); } } = true;
 
   public event Action<InputEventMouseButton>? OnFocusKeyPressed;
   public event Action<string>? OnFocusInput;
@@ -19,8 +19,11 @@ public partial class InputController : Node
   public event Action<InputEventKey>? OnKeyReleased;
 
   private WindowController? _windowController;
+
+  private readonly HashSet<Key> _heldKeys = [];
   private List<string> _hoveredWindowIds = [];
   private readonly Dictionary<string, Vector2> _windowSwipeDirs = [];
+
   private bool _isLeftMouseHeld = false;
 
   public static readonly float DIRECTION_CHANGE_ANGLE_THRESHOLD = 45f;
@@ -37,9 +40,21 @@ public partial class InputController : Node
       return;
 
     if (keyEvent.IsPressed())
+    {
+      // Skip if this key is already held (OS-level repeat disguised as new press)
+      if (!_heldKeys.Add(keyEvent.Keycode))
+        return;
+
       OnNormalKeyPressed?.Invoke(keyEvent);
+    }
     else if (keyEvent.IsReleased())
+    {
+      // Skip release if not actually holding the key
+      if (!_heldKeys.Remove(keyEvent.Keycode))
+        return;
+
       OnKeyReleased?.Invoke(keyEvent);
+    }
   }
 
   public override void _Input(InputEvent @event)
