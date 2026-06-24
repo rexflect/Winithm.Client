@@ -1,4 +1,5 @@
 using Godot;
+using Winithm.Native;
 
 namespace Winithm.Client.Behaviors.Gameplay;
 
@@ -9,14 +10,21 @@ public partial class PlayerWrapper : Control
   [Export] public GameplayAspectMode AspectMode { get; set; } = GameplayAspectMode.Ratio16_9;
 
   private Control? _gameArea;
+  private Player? _gamePlayer;
+
   private const float BaseWidth = 1280f;
   private const float BaseHeight = 720f;
   private const float AspectRatio = BaseWidth / BaseHeight;
 
+  private Color _borderColor = Colors.White;
+
   public override void _Ready()
   {
     _gameArea = GetNodeOrNull<Control>("PlayerArea");
+    _gamePlayer = _gameArea?.GetNodeOrNull<Player>("Player");
     _gameArea?.Draw += DrawBorder;
+
+    _borderColor = PlatformProviderFactory.Create().GetAccentColor() ?? Colors.White;
 
     Resized += ApplyAspectMode;
 
@@ -27,9 +35,9 @@ public partial class PlayerWrapper : Control
   {
     _gameArea?.DrawRect(
         new Rect2(Vector2.Zero, _gameArea.Size),
-        Colors.Cyan,
+        _borderColor,
         false,
-        2.0f,
+        2.5f,
         true
     );
   }
