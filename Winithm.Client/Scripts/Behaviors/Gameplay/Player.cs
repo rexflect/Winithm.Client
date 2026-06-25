@@ -296,13 +296,14 @@ public partial class Player : Control
 
 
     if (IsInstanceValid(_objectsLayer)
+        && IsInstanceValid(_audioController)
         && IsInstanceValid(_groupController)
         && IsInstanceValid(_themeController)
         && IsInstanceValid(_noteController)
     )
     {
       _windowController?.Initialize(
-        _objectsLayer, _chartData.Windows, metronome,
+        _objectsLayer, _chartData.Windows, _audioController,
         _groupController, _themeController, _noteController
       );
       _windowController?.SetWindowMode(WindowMode.InGame);
