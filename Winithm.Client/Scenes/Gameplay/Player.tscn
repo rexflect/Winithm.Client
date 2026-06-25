@@ -10,6 +10,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="ControllerRack" type="Node" parent="." unique_id=563799367]
 
@@ -20,6 +21,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="ObjectsLayer" type="Control" parent="." unique_id=1138206735]
 layout_mode = 1
@@ -28,6 +30,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="HitFXLayer" type="Control" parent="." unique_id=208295408]
 layout_mode = 1
@@ -36,14 +39,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="InnerShaderLayer" type="Control" parent="." unique_id=204929108]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+mouse_filter = 2
 
 [node name="GameplayUI" parent="." unique_id=1473560799 instance=ExtResource("1_dwjgf")]
 layout_mode = 1
@@ -55,6 +51,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="Debug" type="Label" parent="." unique_id=2092607017]
 layout_mode = 1
