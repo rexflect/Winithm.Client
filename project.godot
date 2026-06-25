@@ -12,14 +12,12 @@ config_version=5
 
 config/name="Winithm"
 run/main_scene="uid://k6l8l50pbqyd"
-run/enable_alt_space_menu=true
 config/features=PackedStringArray("4.7", "C#", "GL Compatibility")
-boot_splash/bg_color=Color(0.14117648, 0.14117648, 0.14117648, 0)
+boot_splash/bg_color=Color(0, 0, 0, 0)
 config/icon="res://icon.svg"
 
 [audio]
 
-buses/default_bus_layout=""
 driver/output_latency=10
 driver/output_latency.web=25
 
@@ -37,9 +35,10 @@ file_logging/enable_file_logging=true
 window/size/viewport_width=1280
 window/size/viewport_height=720
 window/size/mode=2
+window/size/resizable=false
 window/size/borderless=true
+window/size/always_on_top=true
 window/size/transparent=true
-window/subwindows/embed_subwindows=false
 window/per_pixel_transparency/allowed=true
 window/vsync/vsync_mode=0
 
