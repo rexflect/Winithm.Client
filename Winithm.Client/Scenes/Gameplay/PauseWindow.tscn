@@ -1,14 +1,12 @@
 [gd_scene format=3 uid="uid://curtnf003h1x8"]
 
-[ext_resource type="Script" uid="uid://domf7adc7o0mu" path="res://Winithm.Client/Scripts/UI/PauseWindow.cs" id="1_pw"]
+[ext_resource type="Script" uid="uid://domf7adc7o0mu" path="res://Winithm.Client/Scripts/Behaviors/Gameplay/PauseWindow.cs" id="1_pw"]
 
 [node name="PauseWindow" type="Window" unique_id=1575684660]
 oversampling_override = 1.0
 title = "Pause"
 initial_position = 2
 size = Vector2i(300, 200)
-transient = true
-exclusive = true
 script = ExtResource("1_pw")
 
 [node name="Panel" type="Panel" parent="." unique_id=149354595]

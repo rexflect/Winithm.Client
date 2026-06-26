@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-namespace Winithm.Client.UI;
+namespace Winithm.Client.Behaviors.Gameplay;
 
 /// <summary>
 /// Pause window UI. Manages Resume, Retry, and Quit actions.

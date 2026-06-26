@@ -10,6 +10,8 @@ namespace Winithm.Client.Managers;
 /// </summary>
 public partial class WindowManager : Node
 {
+  public Control? DesktopEnvironment { get; private set; }
+
   // Track open windows by ID
   public static WindowManager? Instance { get; private set; }
 
@@ -18,6 +20,7 @@ public partial class WindowManager : Node
   public override void _Ready()
   {
     Instance = this;
+    DesktopEnvironment = GetNodeOrNull<Control>("DesktopEnvironment");
   }
 
   /// <summary>
@@ -33,12 +36,13 @@ public partial class WindowManager : Node
 
     window.TransientToFocused = true;
     window.Exclusive = true;
+    window.AlwaysOnTop = true;
 
     // Listen for close requests to clean up
     window.CloseRequested += () => CloseWindow(id);
 
     _windows[id] = window;
-    AddChild(window);
+    DesktopEnvironment?.AddChild(window);
 
     // window.AlwaysOnTop = true;
 
