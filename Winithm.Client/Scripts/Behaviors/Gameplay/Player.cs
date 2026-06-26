@@ -28,6 +28,8 @@ public partial class Player : Control
   private Node? _controllerRack;
   private Control? _objectsLayer;
   private Control? _hitFXLayer;
+  private ColorRect? _readySign;
+  private Label? _readyLabel;
   private Label? _debug;
 
   // ── Core controllers ─────────────────────────────────────────────────────────
@@ -67,6 +69,10 @@ public partial class Player : Control
     _hitFXLayer = GetNodeOrNull<Control>("HitFXLayer");
     _controllerRack = GetNodeOrNull<Node>("ControllerRack");
     _componentController = GetNodeOrNull<ComponentController>("GameplayUI");
+
+    _readySign = GetNodeOrNull<ColorRect>("ReadySign");
+    _readyLabel = _readySign?.GetNodeOrNull<Label>("ReadyLabel");
+
     _debug = GetNodeOrNull<Label>("Debug");
 
     SetAutoPlay(false);
@@ -74,7 +80,11 @@ public partial class Player : Control
     SetNoteSpeed(10f);
     SetNoteHighLightSimulation(true);
 
-    
+    if (_windowDesktopManager?.AccentColor is not null and var accentColor)
+    {
+      _readySign?.Color = accentColor.Value with { A = 1f };
+      _readyLabel?.Modulate = ColorUtils.IsLight(accentColor.Value) ? Colors.Black : Colors.White;
+    }
 
     InitializeControllers();
     LoadDemoLevel();
@@ -143,8 +153,12 @@ public partial class Player : Control
     {
       HandlePauseInput();
       return;
-    } else if (keyEvent.Pressed)
+    }
+    else if (keyEvent.Pressed)
+    {
+      _readySign?.Visible = false;
       IsReadied = true;
+    }
   }
 
   // ── Key release routing ──────────────────────────────────────────────────────
@@ -284,7 +298,7 @@ public partial class Player : Control
       GD.PushError("[Player] Failed to load level data.");
       return;
     }
-    
+
     StartWithChartData();
   }
 
@@ -296,14 +310,15 @@ public partial class Player : Control
       return;
     }
 
+    _readySign?.Visible = true;
     IsReadied = false;
-    
+
     // Stop audio, clear current state, etc before restarting if needed
     _audioController?.Stop();
-    
+
     // Restore from backup
     _chartData = _chartDataBackup.DeepClone();
-    
+
     StartWithChartData();
   }
 
@@ -367,8 +382,8 @@ public partial class Player : Control
     else
       GD.PushError("[Player] Failed to initialize InputController.");
 
-    if (IsInstanceValid(_audioController) 
-        && IsInstanceValid(_noteController) 
+    if (IsInstanceValid(_audioController)
+        && IsInstanceValid(_noteController)
         && IsInstanceValid(_windowController)
     )
       _hitController?.Initialize(_audioController, _noteController, _windowController);
