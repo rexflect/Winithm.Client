@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using Winithm.Client.Managers;
 
 namespace Winithm.Client.Behaviors.Gameplay;
 
@@ -128,9 +129,19 @@ public partial class Player
         return;
 
       case PausePhase.Rewinding:
-        // Allow unpause only after the rewind animation has fully settled.
+        // Now handled by PauseWindow buttons, but allow manual unpause if we want.
+        // If they press pause key again, we can treat it as resume if it's ready.
         if (_rewindTimeLeft <= 0f && _pauseCooldown <= 0f)
-          BeginRecover();
+        {
+          var wm = WindowManager.Instance;
+          if (wm?.HasWindow(UI.PauseWindow.WINDOW_ID) ?? false)
+          {
+            var pauseWindow = wm?.GetWindow<UI.PauseWindow>(UI.PauseWindow.WINDOW_ID);
+            pauseWindow?.OnResume?.Invoke();
+          }
+          else
+            BeginRecover();
+        }
         return;
 
       case PausePhase.Recovering:
@@ -170,6 +181,45 @@ public partial class Player
 
     _pausePhase = PausePhase.Rewinding;
     _componentController?.DrainPauseBar();
+
+    // Allow main game window to be completely click-through to the OS desktop
+    GetWindow().MousePassthrough = true; 
+
+    var wm = WindowManager.Instance;
+    var pauseWindowScene = GD.Load<PackedScene>("res://Winithm.Client/Scenes/UI/PauseWindow.tscn");
+    
+    if (pauseWindowScene is not null)
+    {
+      var pauseWindow = pauseWindowScene.Instantiate<UI.PauseWindow>();
+      
+      pauseWindow.OnResume = () =>
+      {
+        wm?.CloseWindow("PauseWindow");
+        GetWindow().MousePassthrough = false;
+        GetWindow().GrabFocus();
+        BeginRecover();
+      };
+      
+      pauseWindow.OnRetry = () =>
+      {
+        wm?.CloseWindow("PauseWindow");
+        GetWindow().MousePassthrough = false;
+        GetWindow().GrabFocus();
+        _pausePhase = PausePhase.Idle;
+        RestartLevel();
+      };
+      
+      pauseWindow.OnQuit = () =>
+      {
+        GetTree().Quit();
+      };
+      
+      wm?.OpenWindow("PauseWindow", pauseWindow);
+    }
+    else
+    {
+      GD.PushError("[Player] Could not load PauseWindow.tscn!");
+    }
   }
 
   /// <summary>

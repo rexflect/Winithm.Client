@@ -50,6 +50,11 @@ public partial class HitController : Node
     _audioController = audioController;
     _noteController = noteController;
     _windowController = windowController;
+
+    // Clear all stale NoteData references
+    _keysHeldCount = 0;
+    _lastMouseOutBeat.Clear();
+    _lastHoldTickIndex.Clear();
   }
 
 

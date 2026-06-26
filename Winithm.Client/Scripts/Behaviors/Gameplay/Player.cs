@@ -6,6 +6,7 @@ using Winithm.Core.Logic;
 using Winithm.Core.Managers;
 using Winithm.Client.Controllers.Gameplay;
 using Winithm.Native;
+using Force.DeepCloner;
 namespace Winithm.Client.Behaviors.Gameplay;
 
 /// <summary>
@@ -47,6 +48,9 @@ public partial class Player : Control
   // ── Data ─────────────────────────────────────────────────────────────────────
 
   private ChartData? _chartData;
+  private ChartData? _chartDataBackup;
+
+  public bool IsReadied = false;
 
   // ── Misc ─────────────────────────────────────────────────────────────────────
 
@@ -82,6 +86,11 @@ public partial class Player : Control
       GD.PushWarning("[Player] _audioController or _audioController.Metronome is not initialized!");
       return;
     }
+
+    if (IsReadied && _pausePhase is not PausePhase.Rewinding)
+      _audioController.Resume();
+    else
+      _audioController.Pause();
 
     // Decrement pause cooldown.
     if (_pauseCooldown > 0)
@@ -133,7 +142,8 @@ public partial class Player : Control
     {
       HandlePauseInput();
       return;
-    }
+    } else if (keyEvent.Pressed)
+      IsReadied = true;
   }
 
   // ── Key release routing ──────────────────────────────────────────────────────
@@ -261,16 +271,48 @@ public partial class Player : Control
 
   // ── Level loading ─────────────────────────────────────────────────────────────
 
-  private async void LoadDemoLevel() => LoadLevel("frizka.allMyFellas", "info");
+  private void LoadDemoLevel() => LoadLevel("frizka.allMyFellas", "info");
 
-  public async void LoadLevel(string songID, string chartID)
+  public void LoadLevel(string songID, string chartID)
   {
     _chartData = WinithmIO.LoadLevel(LEVEL_DIR, songID, chartID);
+    _chartDataBackup = _chartData?.DeepClone();
+
     if (_chartData is null)
     {
       GD.PushError("[Player] Failed to load level data.");
       return;
     }
+    
+    StartWithChartData();
+  }
+
+  public void RestartLevel()
+  {
+    if (_chartDataBackup is null)
+    {
+      GD.PushError("[Player] Cannot restart, _chartDataBackup is null.");
+      return;
+    }
+
+    IsReadied = false;
+    
+    // Stop audio, clear current state, etc before restarting if needed
+    _audioController?.Stop();
+    
+    // Restore from backup
+    _chartData = _chartDataBackup.DeepClone();
+    
+    StartWithChartData();
+  }
+
+  private async void StartWithChartData()
+  {
+    if (_chartData is null) return;
+
+    // Block input while reinitializing
+    _inputController?.IsInputEnabled = false;
+    _pausePhase = PausePhase.Idle;
 
     var metronome = _chartData.SongMetaData.Audio.Metronome;
     _audioController?.Initialize(metronome);
@@ -332,17 +374,13 @@ public partial class Player : Control
     else
       GD.PushError("[Player] Failed to initialize HitController.");
 
+    _scoreTracker?.Reset();
     _scoreTracker?.SetTotalCombos(_chartData.Windows.TotalComboCount);
 
     _componentController?.SetAccuracy(1f);
     _componentController?.SetScore(0);
     _componentController?.SetCombo(0);
     _componentController?.SetStatus(Autoplay ? ScoreEngine.CompletionStatus.AT : ScoreEngine.CompletionStatus.AP);
-
-    // Wait for Godot splash and renderer to settle before starting playback.
-    await ToSignal(GetTree().CreateTimer(2.0), SceneTreeTimer.SignalName.Timeout);
-
-    _audioController?.Resume();
   }
 
   // ── Setters ──────────────────────────────────────────────────────────────────

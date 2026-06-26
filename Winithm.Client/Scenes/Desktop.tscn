@@ -6,15 +6,6 @@
 [node name="Desktop" type="CanvasLayer" unique_id=844740044]
 script = ExtResource("1_5oh3a")
 
-[node name="DesktopEnvironment" type="Control" parent="." unique_id=244639133]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-
 [node name="PlayerWrapper" parent="." unique_id=834605885 instance=ExtResource("1_5y2vr")]
 offset_left = 2.0
 offset_top = 5.0
