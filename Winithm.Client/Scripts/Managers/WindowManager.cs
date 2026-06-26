@@ -34,9 +34,10 @@ public partial class WindowManager : Node
       return;
     }
 
+    window.Transient = true;
     window.TransientToFocused = true;
     window.Exclusive = true;
-    window.AlwaysOnTop = true;
+    window.ForceNative = true;
 
     // Listen for close requests to clean up
     window.CloseRequested += () => CloseWindow(id);
