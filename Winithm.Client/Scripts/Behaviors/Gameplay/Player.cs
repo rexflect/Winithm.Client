@@ -5,9 +5,10 @@ using Winithm.Core.Data;
 using Winithm.Core.Logic;
 using Winithm.Core.Managers;
 using Winithm.Client.Controllers.Gameplay;
-using Winithm.Native;
 using Force.DeepCloner;
 using Winithm.Client.Managers;
+
+using Constants = Winithm.Core.Constants;
 namespace Winithm.Client.Behaviors.Gameplay;
 
 /// <summary>
@@ -126,6 +127,13 @@ public partial class Player : Control
 
 
     var displaySize = DisplayServer.WindowGetSize();
+
+    var scale = Mathf.Min(
+      displaySize.X / Constants.Visual.DESIGN_RESOLUTION.X,
+      displaySize.Y / Constants.Visual.DESIGN_RESOLUTION.Y
+    );
+
+    _readyLabel?.AddThemeFontSizeOverride("font_size", (int)(18 * scale));
 
     _windowController?.ScreenSize = displaySize;
     _windowController?.PlayerAreaSize = Size;
