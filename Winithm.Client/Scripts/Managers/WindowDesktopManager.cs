@@ -108,4 +108,20 @@ public partial class WindowDesktopManager : CanvasLayer
   /// Returns a list of all currently managed windows.
   /// </summary>
   public IReadOnlyList<Window> GetAllWindows() => [.. _windows.Values];
+
+  /// <summary>
+  /// Toggles whether the main game window passes mouse clicks through to the OS desktop.
+  /// </summary>
+  public void SetMainGameClickThrough(bool passthrough)
+  {
+    var mainWindow = GetWindow();
+    if (mainWindow == null) return;
+
+    // 1. Ask Godot to do it (handles MacOS/Linux where Native API might be a stub, or simple cases)
+    mainWindow.MousePassthrough = passthrough;
+
+    // 2. Enforce via Native API (fixes Godot 4.x Windows bugs with MousePassthrough)
+    var hwnd = (nint)DisplayServer.WindowGetNativeHandle(DisplayServer.HandleType.WindowHandle, mainWindow.GetWindowId());
+    PlatformProvider.SetClickThrough(hwnd, passthrough);
+  }
 }

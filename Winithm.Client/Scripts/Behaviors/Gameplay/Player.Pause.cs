@@ -185,14 +185,14 @@ public partial class Player
     _componentController?.DrainPauseBar();
 
     // Allow main game window to be completely click-through to the OS desktop
-    GetWindow().MousePassthrough = true;
+    _windowDesktopManager?.SetMainGameClickThrough(true);
 
     var pauseWindow = _pauseWindowScene.Instantiate<PauseWindow>();
 
     pauseWindow.OnResume = () =>
     {
       _windowDesktopManager?.CloseWindow(PauseWindow.WINDOW_ID);
-      GetWindow().MousePassthrough = false;
+      _windowDesktopManager?.SetMainGameClickThrough(false);
       GetWindow().GrabFocus();
       BeginRecover();
     };
@@ -200,7 +200,7 @@ public partial class Player
     pauseWindow.OnRetry = () =>
     {
       _windowDesktopManager?.CloseWindow(PauseWindow.WINDOW_ID);
-      GetWindow().MousePassthrough = false;
+      _windowDesktopManager?.SetMainGameClickThrough(false);
       GetWindow().GrabFocus();
       _pausePhase = PausePhase.Idle;
       RestartLevel();
