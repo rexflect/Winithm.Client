@@ -191,6 +191,9 @@ public partial class Player
 
     pauseWindow.OnResume = () =>
     {
+      _readySign?.Visible = false;
+      IsReadied = true;
+
       _windowDesktopManager?.CloseWindow(PauseWindow.WINDOW_ID);
       _windowDesktopManager?.SetMainGameClickThrough(false);
       GetWindow().GrabFocus();

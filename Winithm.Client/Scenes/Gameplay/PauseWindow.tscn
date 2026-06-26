@@ -1,46 +1,96 @@
 [gd_scene format=3 uid="uid://curtnf003h1x8"]
 
 [ext_resource type="Script" uid="uid://domf7adc7o0mu" path="res://Winithm.Client/Scripts/Behaviors/Gameplay/PauseWindow.cs" id="1_pw"]
+[ext_resource type="Texture2D" uid="uid://cnxkkmppfrrjo" path="res://Winithm.Client/Resources/Icons/PauseWindow/quit.svg" id="2_xeuje"]
+[ext_resource type="Texture2D" uid="uid://cel8ohem0778g" path="res://Winithm.Client/Resources/Icons/PauseWindow/restart.svg" id="3_bh31l"]
+[ext_resource type="Texture2D" uid="uid://dkbq1qgwdkmby" path="res://Winithm.Client/Resources/Icons/PauseWindow/resume.svg" id="4_4gbmd"]
 
 [node name="PauseWindow" type="Window" unique_id=1575684660]
 oversampling_override = 1.0
 title = "Pause"
 initial_position = 2
-size = Vector2i(300, 200)
+size = Vector2i(644, 200)
+wrap_controls = true
 unresizable = true
+minimize_disabled = true
+maximize_disabled = true
+min_size = Vector2i(300, 60)
 script = ExtResource("1_pw")
 
-[node name="Panel" type="Panel" parent="." unique_id=149354595]
+[node name="Panel" type="ColorRect" parent="." unique_id=949428981]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+color = Color(0, 0, 0, 1)
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel" unique_id=325252930]
+[node name="Pad1" type="ColorRect" parent="Panel" unique_id=215764631]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -100.0
-offset_top = -60.0
-offset_right = 100.0
-offset_bottom = 60.0
+anchors_preset = -1
+anchor_top = 0.425
+anchor_right = 0.275
+anchor_bottom = 0.85
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 10
-alignment = 1
+rotation = 0.7853982
 
-[node name="ResumeButton" type="Button" parent="Panel/VBoxContainer" unique_id=1911936401]
-layout_mode = 2
-text = "Resume"
+[node name="Pad2" type="ColorRect" parent="Panel" unique_id=147935979]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.3
+anchor_right = 0.325
+anchor_bottom = 0.35
+grow_horizontal = 2
+grow_vertical = 2
+rotation = 0.7853982
 
-[node name="RetryButton" type="Button" parent="Panel/VBoxContainer" unique_id=1115327503]
-layout_mode = 2
-text = "Retry"
+[node name="Label" type="Label" parent="Panel" unique_id=1850873035]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.125
+anchor_top = 0.5
+anchor_right = 0.125
+anchor_bottom = 0.5
+offset_top = -29.0
+offset_right = 131.0
+offset_bottom = 29.0
+grow_vertical = 2
+theme_override_font_sizes/font_size = 42
+text = "Pause"
+vertical_alignment = 1
+uppercase = true
 
-[node name="QuitButton" type="Button" parent="Panel/VBoxContainer" unique_id=1274382722]
-layout_mode = 2
-text = "Quit"
+[node name="ResumeBtn" type="Button" parent="Panel" unique_id=904766945]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.8
+anchor_top = 0.35
+anchor_right = 0.9
+anchor_bottom = 0.65
+grow_horizontal = 0
+grow_vertical = 2
+icon = ExtResource("4_4gbmd")
+icon_alignment = 1
+
+[node name="RestartBtn" type="Button" parent="Panel" unique_id=73935309]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.675
+anchor_top = 0.35
+anchor_right = 0.775
+anchor_bottom = 0.65
+grow_horizontal = 0
+grow_vertical = 2
+icon = ExtResource("3_bh31l")
+icon_alignment = 1
+
+[node name="QuitBtn" type="Button" parent="Panel" unique_id=777994646]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.55
+anchor_top = 0.35
+anchor_right = 0.65
+anchor_bottom = 0.65
+icon = ExtResource("2_xeuje")
+icon_alignment = 1
