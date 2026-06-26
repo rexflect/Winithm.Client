@@ -21,9 +21,13 @@ public partial class WindowDesktopManager : CanvasLayer
 
   private readonly Dictionary<string, Window> _windows = [];
 
-  public override void _Ready()
+  public override void _EnterTree()
   {
     Instance = this;
+  }
+
+  public override void _Ready()
+  {
     DesktopEnvironment = GetNodeOrNull<Control>("DesktopEnvironment");
   }
 

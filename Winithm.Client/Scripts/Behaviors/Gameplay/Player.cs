@@ -57,7 +57,7 @@ public partial class Player : Control
 
   public static readonly string LEVEL_DIR = "res://Winithm.Assets/Levels";
 
-  private WindowDesktopManager? _windowDesktopManager = WindowDesktopManager.Instance;
+  private WindowDesktopManager? _windowDesktopManager => WindowDesktopManager.Instance;
 
   // ── Godot lifecycle ──────────────────────────────────────────────────────────
 
@@ -73,6 +73,8 @@ public partial class Player : Control
     SetNoteSize(1.5f);
     SetNoteSpeed(10f);
     SetNoteHighLightSimulation(true);
+
+    
 
     InitializeControllers();
     LoadDemoLevel();

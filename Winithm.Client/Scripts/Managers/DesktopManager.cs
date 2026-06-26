@@ -16,9 +16,13 @@ public partial class DesktopManager : Node
 
   private static readonly IPlatformProvider Platform = PlatformProviderFactory.Create();
 
-  public override void _Ready()
+  public override void _EnterTree()
   {
     Instance = this;
+  }
+
+  public override void _Ready()
+  {
     ApplyFullScreen();
   }
 
