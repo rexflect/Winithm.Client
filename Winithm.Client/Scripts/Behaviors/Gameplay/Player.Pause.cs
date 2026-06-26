@@ -136,10 +136,9 @@ public partial class Player
         // If they press pause key again, we can treat it as resume if it's ready.
         if (_rewindTimeLeft <= 0f && _pauseCooldown <= 0f)
         {
-          var wm = WindowManager.Instance;
-          if (wm?.HasWindow(PauseWindow.WINDOW_ID) ?? false)
+          if (_windowDesktopManager?.HasWindow(PauseWindow.WINDOW_ID) ?? false)
           {
-            var pauseWindow = wm?.GetWindow<PauseWindow>(PauseWindow.WINDOW_ID);
+            var pauseWindow = _windowDesktopManager?.GetWindow<PauseWindow>(PauseWindow.WINDOW_ID);
             pauseWindow?.OnResume?.Invoke();
           }
           else
@@ -188,13 +187,11 @@ public partial class Player
     // Allow main game window to be completely click-through to the OS desktop
     GetWindow().MousePassthrough = true;
 
-    var wm = WindowManager.Instance;
-
     var pauseWindow = _pauseWindowScene.Instantiate<PauseWindow>();
 
     pauseWindow.OnResume = () =>
     {
-      wm?.CloseWindow("PauseWindow");
+      _windowDesktopManager?.CloseWindow(PauseWindow.WINDOW_ID);
       GetWindow().MousePassthrough = false;
       GetWindow().GrabFocus();
       BeginRecover();
@@ -202,7 +199,7 @@ public partial class Player
 
     pauseWindow.OnRetry = () =>
     {
-      wm?.CloseWindow("PauseWindow");
+      _windowDesktopManager?.CloseWindow(PauseWindow.WINDOW_ID);
       GetWindow().MousePassthrough = false;
       GetWindow().GrabFocus();
       _pausePhase = PausePhase.Idle;
@@ -214,7 +211,7 @@ public partial class Player
       GetTree().Quit();
     };
 
-    wm?.OpenWindow(PauseWindow.WINDOW_ID, pauseWindow);
+    _windowDesktopManager?.OpenWindow(PauseWindow.WINDOW_ID, pauseWindow);
   }
 
   /// <summary>

@@ -7,6 +7,7 @@ using Winithm.Core.Managers;
 using Winithm.Client.Controllers.Gameplay;
 using Winithm.Native;
 using Force.DeepCloner;
+using Winithm.Client.Managers;
 namespace Winithm.Client.Behaviors.Gameplay;
 
 /// <summary>
@@ -56,9 +57,7 @@ public partial class Player : Control
 
   public static readonly string LEVEL_DIR = "res://Winithm.Assets/Levels";
 
-
-  private IPlatformProvider _platform = PlatformProviderFactory.Create();
-  private Color? AccentColor => _platform.GetAccentColor();
+  private WindowDesktopManager? _windowDesktopManager = WindowDesktopManager.Instance;
 
   // ── Godot lifecycle ──────────────────────────────────────────────────────────
 
@@ -87,10 +86,10 @@ public partial class Player : Control
       return;
     }
 
-    if (IsReadied && _pausePhase is not PausePhase.Rewinding)
+    if (IsReadied
+        && _pausePhase is not PausePhase.Rewinding
+        && !_audioController.IsPlaying)
       _audioController.Resume();
-    else
-      _audioController.Pause();
 
     // Decrement pause cooldown.
     if (_pauseCooldown > 0)
@@ -190,9 +189,9 @@ public partial class Player : Control
     _audioController = new AudioController() { Name = "AudioController" };
     _controllerRack?.AddChild(_audioController);
 
-    if (AccentColor is not null)
+    if (_windowDesktopManager?.AccentColor is not null)
     {
-      _componentController?.BgStripeColor = AccentColor.Value with { A = 1f };
+      _componentController?.BgStripeColor = _windowDesktopManager.AccentColor.Value with { A = 1f };
       _componentController?.UpdateColor();
     }
 
@@ -350,8 +349,8 @@ public partial class Player : Control
       );
       _windowController?.SetWindowMode(WindowMode.InGame);
 
-      if (AccentColor is not null)
-        _windowController?.TitleBarColor = AccentColor.Value with { A = 1f };
+      if (_windowDesktopManager?.AccentColor is not null)
+        _windowController?.TitleBarColor = _windowDesktopManager.AccentColor.Value with { A = 1f };
     }
     else
       GD.PushError("[Player] Failed to initialize WindowController.");

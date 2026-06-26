@@ -1,6 +1,7 @@
 using Godot;
 using System.Collections.Generic;
 using System.Linq;
+using Winithm.Native;
 
 namespace Winithm.Client.Managers;
 
@@ -8,12 +9,15 @@ namespace Winithm.Client.Managers;
 /// OS-like Window Manager for Godot.Window instances.
 /// Handles lifecycle, focus, and grouping Windows on the taskbar.
 /// </summary>
-public partial class WindowManager : Node
+public partial class WindowDesktopManager : CanvasLayer
 {
   public Control? DesktopEnvironment { get; private set; }
 
   // Track open windows by ID
-  public static WindowManager? Instance { get; private set; }
+  public static WindowDesktopManager? Instance { get; private set; }
+
+  public IPlatformProvider PlatformProvider { get; private set; } = PlatformProviderFactory.Create();
+  public Color? AccentColor => PlatformProvider.GetAccentColor();
 
   private readonly Dictionary<string, Window> _windows = [];
 

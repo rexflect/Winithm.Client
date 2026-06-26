@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://k6l8l50pbqyd"]
 
-[ext_resource type="Script" uid="uid://dxatowlws3j3d" path="res://Winithm.Client/Scripts/Managers/WindowManager.cs" id="1_5oh3a"]
+[ext_resource type="Script" uid="uid://bko3abu7bdyh1" path="res://Winithm.Client/Scripts/Managers/WindowDesktopManager.cs" id="1_5oh3a"]
 [ext_resource type="PackedScene" uid="uid://nlhlt66a0i8b" path="res://Winithm.Client/Scenes/Gameplay/PlayerWrapper.tscn" id="1_5y2vr"]
 
 [node name="Desktop" type="CanvasLayer" unique_id=844740044]
