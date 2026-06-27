@@ -1,6 +1,7 @@
 using Godot;
 using System.Collections.Generic;
 using System.Linq;
+using Winithm.Core.Common;
 using Winithm.Native;
 
 namespace Winithm.Client.Managers;
@@ -18,6 +19,9 @@ public partial class WindowDesktopManager : CanvasLayer
 
   public IPlatformProvider PlatformProvider { get; private set; } = PlatformProviderFactory.Create();
   public Color? AccentColor => PlatformProvider.GetAccentColor();
+
+  public static float ScreenScaleFactor 
+    => OSDisplayUtils.GetReferenceResolutionScale(DisplayServer.WindowGetSize());
 
   private readonly Dictionary<string, Window> _windows = [];
 
@@ -46,6 +50,19 @@ public partial class WindowDesktopManager : CanvasLayer
     window.TransientToFocused = true;
     window.Exclusive = true;
     window.ForceNative = true;
+
+    // Preserve the design size before scaling for ContentScale
+    var designSize = window.Size;
+
+    window.Size = new Vector2I(
+      (int)(window.Size.X * ScreenScaleFactor),
+      (int)(window.Size.Y * ScreenScaleFactor)
+    );
+
+    // Auto stretch: content inside the window scales to match the actual size
+    window.ContentScaleSize = designSize;
+    window.ContentScaleMode = Window.ContentScaleModeEnum.CanvasItems;
+    window.ContentScaleAspect = Window.ContentScaleAspectEnum.Expand;
 
     // Listen for close requests to clean up
     window.CloseRequested += () => CloseWindow(id);

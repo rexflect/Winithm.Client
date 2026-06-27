@@ -125,10 +125,7 @@ public partial class Player : Control
 
     var displaySize = DisplayServer.WindowGetSize();
 
-    var scale = Mathf.Min(
-      Size.X / Constants.Visual.DESIGN_RESOLUTION.X,
-      Size.Y / Constants.Visual.DESIGN_RESOLUTION.Y
-    );
+    var scale = OSDisplayUtils.GetReferenceResolutionScale(Size);
 
     _readyLabel?.AddThemeFontSizeOverride("font_size", (int)(18 * scale));
 
