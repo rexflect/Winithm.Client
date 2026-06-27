@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Threading.Tasks;
 using Winithm.Client.Managers;
 
 namespace Winithm.Client.Behaviors.Gameplay;
@@ -189,14 +190,20 @@ public partial class Player
 
     var pauseWindow = _pauseWindowScene.Instantiate<PauseWindow>();
 
-    pauseWindow.OnResume = () =>
+    pauseWindow.OnResume = async () =>
     {
-      _readySign?.Visible = false;
-      IsReadied = true;
-
       _windowDesktopManager?.CloseWindow(PauseWindow.WINDOW_ID);
       _windowDesktopManager?.SetMainGameClickThrough(false);
       GetWindow().GrabFocus();
+
+      _readySign?.Visible = false;
+
+      if (!IsReadied)
+      {
+        await Task.Delay(500);
+        IsReadied = true;
+      }
+
       BeginRecover();
     };
 

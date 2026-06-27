@@ -1,4 +1,5 @@
 using Godot;
+using System.Threading.Tasks;
 using Winithm.Core.Common;
 using Winithm.Core.Controllers;
 using Winithm.Core.Data;
@@ -9,6 +10,7 @@ using Force.DeepCloner;
 using Winithm.Client.Managers;
 
 using Constants = Winithm.Core.Constants;
+
 namespace Winithm.Client.Behaviors.Gameplay;
 
 /// <summary>
@@ -99,11 +101,6 @@ public partial class Player : Control
       return;
     }
 
-    if (IsReadied
-        && _pausePhase is not PausePhase.Rewinding
-        && !_audioController.IsPlaying)
-      _audioController.Resume();
-
     // Decrement pause cooldown.
     if (_pauseCooldown > 0)
       _pauseCooldown -= (float)delta;
@@ -129,8 +126,8 @@ public partial class Player : Control
     var displaySize = DisplayServer.WindowGetSize();
 
     var scale = Mathf.Min(
-      displaySize.X / Constants.Visual.DESIGN_RESOLUTION.X,
-      displaySize.Y / Constants.Visual.DESIGN_RESOLUTION.Y
+      Size.X / Constants.Visual.DESIGN_RESOLUTION.X,
+      Size.Y / Constants.Visual.DESIGN_RESOLUTION.Y
     );
 
     _readyLabel?.AddThemeFontSizeOverride("font_size", (int)(18 * scale));
@@ -151,7 +148,7 @@ public partial class Player : Control
     _componentController?.Update(currentBeat);
   }
 
-  public override void _UnhandledInput(InputEvent @event)
+  public async override void _UnhandledInput(InputEvent @event)
   {
     if (_hitController is null || _audioController is null) return;
     if (@event is not InputEventKey keyEvent) return;
@@ -164,8 +161,17 @@ public partial class Player : Control
     }
     else if (keyEvent.Pressed)
     {
-      _readySign?.Visible = false;
-      IsReadied = true;
+      if (!IsReadied
+        && _pausePhase is not PausePhase.Rewinding
+        && !_audioController.IsPlaying)
+      {
+        IsReadied = true;
+        _readySign?.Visible = false;
+        
+        await Task.Delay(500);
+
+        _audioController.Resume();
+      }
     }
   }
 
