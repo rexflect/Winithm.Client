@@ -84,6 +84,10 @@ public partial class Player
       return;
     }
 
+    // Rewind already complete — clock is frozen, nothing to do.
+    if (_rewindTimeLeft <= 0f)
+      return;
+
     _rewindTimeLeft -= (float)delta;
 
     double step = _rewindRate * delta; // chart-seconds to move back this frame
@@ -97,9 +101,7 @@ public partial class Player
       _rewindTimeLeft = 0f;
     }
     else
-    {
       _audioController.AdjustTime(-step);
-    }
   }
 
   /// <summary>
