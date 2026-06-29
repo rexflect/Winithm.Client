@@ -79,7 +79,7 @@ public partial class Player : Control
     _debug = GetNodeOrNull<Label>("Debug");
 
     SetAutoPlay(false);
-    SetNoteSize(1.5f);
+    SetNoteSize(1.25f);
     SetNoteSpeed(10f);
     SetNoteHighLightSimulation(true);
 
@@ -280,6 +280,7 @@ public partial class Player : Control
       _noteController.OnAutoHit += _hitController.HandleAutoHit;
 
       _noteController.OnDragReady += _hitController.HandleDragReady;
+      _noteController.OnHoverReady += _hitController.HandleHoverReady;
 
       _noteController.OnActiveHoldTick += _hitController.HandleActiveHoldTick;
       _noteController.OnActiveHoldEnded += _hitController.HandleActiveHoldEnded;

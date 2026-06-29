@@ -16,7 +16,8 @@ namespace Winithm.Client.Controllers.Gameplay;
 /// Input rules:
 /// - Tap/Hold: Any key (except Tab and \). N simultaneous notes = N presses needed.
 /// - Hold sustain: At least one key must be held. Early release beyond Good window = miss.
-/// - Drag: Any key held OR within Good window (125ms) after last release = auto hit.
+/// - Drag: Any key held OR within Good window after last release = auto hit.
+/// - Hover: Mouse hover specified window OR within Good window after last release = auto hit.
 /// - Focus (Tab): One press resolves ALL Focus notes across ALL windows.
 ///     Also ends focusable state on any currently-focusable windows.
 ///     Miss = AddStartFocusable on the missed note's window.
@@ -33,6 +34,7 @@ public partial class HitController : Node
   private WindowController? _windowController;
 
   private int _keysHeldCount = 0;
+  private double _lastKbReleaseBeat = double.MinValue;
   private readonly Dictionary<string, double> _lastMouseOutBeat = [];
 
   private readonly Dictionary<NoteData, long> _lastHoldTickIndex = [];
@@ -53,6 +55,7 @@ public partial class HitController : Node
 
     // Clear all stale NoteData references
     _keysHeldCount = 0;
+    _lastKbReleaseBeat = double.MinValue;
     _lastMouseOutBeat.Clear();
     _lastHoldTickIndex.Clear();
   }
@@ -108,6 +111,10 @@ public partial class HitController : Node
   {
     _keysHeldCount = Math.Max(0, _keysHeldCount - 1);
 
+    if (_audioController?.CurrentBeat is double currentBeat)
+      _lastKbReleaseBeat = currentBeat;
+    else
+      GD.PushWarning("[HitController] _audioController is not initialized!");
 
     // If all keys released, check for early hold releases
     if (_keysHeldCount == 0)
@@ -119,10 +126,29 @@ public partial class HitController : Node
   // =============================================
 
   /// <summary>
-  /// Called each frame. Handles drag auto-hit when a key is held
-  /// or within Good timing window (125ms) after release.
+  /// Called each frame. Handles drag auto-hit when any key is held
+  /// or within Good timing window after last release.
   /// </summary>
-  public bool IsDragActive(string windowId, double currentBeat)
+  public bool IsDragActive(double currentBeat)
+  {
+    if (_keysHeldCount > 0) return true;
+
+    if (_lastKbReleaseBeat > double.MinValue && _audioController?.Metronome is not null)
+    {
+      double elapsedMs = _audioController.Metronome.ToDeltaMilliSeconds(
+        _lastKbReleaseBeat, currentBeat
+      );
+      return elapsedMs >= 0 && elapsedMs <= Constants.HitResult.TimmingWindowMs[HitResultType.Good];
+    }
+
+    return false;
+  }
+
+  /// <summary>
+  /// Called each frame. Handles hover auto-hit when mouse is hovered over the window
+  /// or within Good timing window after mouse leaves the window.
+  /// </summary>
+  public bool IsHoverActive(string windowId, double currentBeat)
   {
     if (!IsInstanceValid(_windowController))
     {
@@ -147,7 +173,7 @@ public partial class HitController : Node
     if (_lastMouseOutBeat.TryGetValue(windowId, out double lastBeat) && lastBeat > double.MinValue)
     {
       double elapsedMs = _audioController.Metronome.ToDeltaMilliSeconds(lastBeat, currentBeat);
-      return elapsedMs <= Constants.HitResult.TimmingWindowMs[HitResultType.Bad];
+      return elapsedMs >= 0 && elapsedMs <= Constants.HitResult.TimmingWindowMs[HitResultType.Good];
     }
 
     return false;
@@ -169,6 +195,7 @@ public partial class HitController : Node
 
     var result = HitResult.Miss(note);
     note.IsEvaluated = true;
+    _noteController?.ConsumeNote(windowId, note);
     OnMiss?.Invoke(windowId, result);
 
     // Focus miss → make the window focusable
@@ -191,8 +218,33 @@ public partial class HitController : Node
     }
 
     double currentBeat = _audioController.CurrentBeat.Value;
+
+    if (!IsDragActive(currentBeat)) return;
+
+    var result = HitResult.FromBinary(note, elapsedMs);
+    if (result.IsHit)
+    {
+      note.IsEvaluated = true;
+      _noteController?.ConsumeNote(windowId, note);
+      OnHit?.Invoke(windowId, result);
+
+      OnHitResponseRequested?.Invoke(windowId, note, result, true);
+    }
+  }
+
+  /// <summary>Fired by NoteController when a Hover note enters judgement zone.</summary>
+  public void HandleHoverReady(string windowId, NoteData note, double elapsedMs)
+  {
+    if (!IsInstanceValid(_noteController)
+      || _audioController?.CurrentBeat is null)
+    {
+      GD.PushWarning("[HitController] _noteController or _audioController.Metronome is not initialized!");
+      return;
+    }
+
+    double currentBeat = _audioController.CurrentBeat.Value;
     
-    if (!IsDragActive(windowId, currentBeat)) return;
+    if (!IsHoverActive(windowId, currentBeat)) return;
 
     var result = HitResult.FromBinary(note, elapsedMs);
     if (result.IsHit)
@@ -376,7 +428,7 @@ public partial class HitController : Node
       ) ?? 0;
 
       // If the hold is about to end within Good window, let it complete naturally
-      if (remainingMs <= Constants.HitResult.TimmingWindowMs[HitResultType.Bad]) continue;
+      if (remainingMs <= Constants.HitResult.TimmingWindowMs[HitResultType.Good]) continue;
 
       // Early release → miss
       note.IsEvaluated = true;
