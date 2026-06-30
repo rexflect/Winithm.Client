@@ -9,8 +9,6 @@ using Winithm.Client.Controllers.Gameplay;
 using Force.DeepCloner;
 using Winithm.Client.Managers;
 
-using Constants = Winithm.Core.Constants;
-
 namespace Winithm.Client.Behaviors.Gameplay;
 
 /// <summary>
@@ -334,7 +332,7 @@ public partial class Player : Control
     StartWithChartData();
   }
 
-  private async void StartWithChartData()
+  private void StartWithChartData()
   {
     if (_chartData is null) return;
 
