@@ -10,7 +10,7 @@ namespace Winithm.Client.Controllers.Gameplay;
 /// </summary>
 public partial class InputController : Node
 {
-  public bool IsInputEnabled { get; set { field = value; _heldKeys.Clear(); } } = true;
+  public bool IsInputEnabled { get; set; } = true;
 
   public event Action<InputEventMouseButton>? OnFocusKeyPressed;
   public event Action<string>? OnFocusInput;
