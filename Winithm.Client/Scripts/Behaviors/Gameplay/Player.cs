@@ -56,6 +56,8 @@ public partial class Player : Control
 
   public bool IsReadied = false;
 
+  private double _debugUpdateTimer = 0;
+
   // ── Misc ─────────────────────────────────────────────────────────────────────
 
   public static readonly string LEVEL_DIR = "res://Winithm.Assets/Levels";
@@ -116,10 +118,17 @@ public partial class Player : Control
       return;
     }
 
-    _debug?.Text =
-      $"Beat: {currentBeat:F2}\n"
-      + $"FPS: {Engine.GetFramesPerSecond()} | Frame: {delta * 1000:F2}ms | Vsync: {(DisplayServer.WindowGetVsyncMode() == DisplayServer.VSyncMode.Enabled ? "On" : "Off")}";
-
+    if (_debug is not null)
+    {
+      _debugUpdateTimer -= delta;
+      if (_debugUpdateTimer <= 0)
+      {
+        _debugUpdateTimer = 0.5;
+        _debug.Text =
+          $"Beat: {currentBeat:F2}\n"
+          + $"FPS: {Engine.GetFramesPerSecond()} | Frame: {delta * 1000:F2}ms | Vsync: {(DisplayServer.WindowGetVsyncMode() == DisplayServer.VSyncMode.Enabled ? "On" : "Off")}";
+      }
+    }
 
     var displaySize = DisplayServer.WindowGetSize();
 
@@ -162,7 +171,7 @@ public partial class Player : Control
       {
         IsReadied = true;
         _readySign?.Visible = false;
-        
+
         await Task.Delay(500);
 
         _audioController.Resume();
