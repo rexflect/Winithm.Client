@@ -21,7 +21,8 @@ public partial class InputController : Node
   private WindowController? _windowController;
 
   private readonly HashSet<Key> _heldKeys = [];
-  private List<string> _hoveredWindowIds = [];
+  private HashSet<string> _hoveredWindowIds = [];
+  private HashSet<string> _targetWindowIds = [];
   private readonly Dictionary<string, Vector2> _windowSwipeDirs = [];
 
   private bool _isLeftMouseHeld = false;
@@ -79,7 +80,7 @@ public partial class InputController : Node
         if (mouseButtonEvent.Pressed)
         {
           _isLeftMouseHeld = true;
-          _hoveredWindowIds = _windowController.GetListWindowIdsAtMousePosition(mouseButtonEvent.GlobalPosition);
+          _windowController.GetWindowIdsAtMousePosition(mouseButtonEvent.GlobalPosition, _hoveredWindowIds);
           foreach (var windowId in _hoveredWindowIds)
             OnFocusInput?.Invoke(windowId);
         }
@@ -92,19 +93,19 @@ public partial class InputController : Node
       }
       else if (mouseButtonEvent.ButtonIndex == MouseButton.Right && mouseButtonEvent.Pressed)
       {
-        var windowIds = _windowController.GetListWindowIdsAtMousePosition(mouseButtonEvent.GlobalPosition);
-        foreach (var windowId in windowIds)
+        _windowController.GetWindowIdsAtMousePosition(mouseButtonEvent.GlobalPosition, _targetWindowIds);
+        foreach (var windowId in _targetWindowIds)
           OnCloseInput?.Invoke(windowId);
       }
     }
     else if (@event is InputEventMouseMotion mouseMotionEvent && _isLeftMouseHeld)
     {
-      var targetWindowIds = _windowController.GetListWindowIdsAtMousePosition(mouseMotionEvent.GlobalPosition);
+      _windowController.GetWindowIdsAtMousePosition(mouseMotionEvent.GlobalPosition, _targetWindowIds);
 
       var currentMotion = mouseMotionEvent.Relative;
       bool isSignificantMotion = currentMotion.LengthSquared() > MOTION_THRESHOLD;
 
-      foreach (var windowId in targetWindowIds)
+      foreach (var windowId in _targetWindowIds)
       {
         bool isNewHover = !_hoveredWindowIds.Contains(windowId);
         bool isDirectionChange = false;
@@ -133,7 +134,7 @@ public partial class InputController : Node
         }
       }
 
-      _hoveredWindowIds = targetWindowIds;
+      (_hoveredWindowIds, _targetWindowIds) = (_targetWindowIds, _hoveredWindowIds);
     }
   }
 }
