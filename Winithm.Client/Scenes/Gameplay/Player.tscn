@@ -23,7 +23,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="ObjectsLayer" type="Control" parent="." unique_id=1138206735]
+[node name="ObjectLayer" type="Control" parent="." unique_id=1138206735]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -44,7 +44,7 @@ mouse_filter = 2
 [node name="GameplayUI" parent="." unique_id=1473560799 instance=ExtResource("1_dwjgf")]
 layout_mode = 1
 
-[node name="OuterShaderLayer" type="Control" parent="." unique_id=639596532]
+[node name="ShaderLayer" type="Control" parent="." unique_id=639596532]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

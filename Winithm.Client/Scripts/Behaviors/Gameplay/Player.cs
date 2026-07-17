@@ -27,7 +27,7 @@ public partial class Player : Control
   // ── Scene nodes ──────────────────────────────────────────────────────────────
 
   private Node? _controllerRack;
-  private Control? _objectsLayer;
+  private Control? _objectLayer;
   private Control? _hitFXLayer;
   private ColorRect? _readySign;
   private Label? _readyLabel;
@@ -68,7 +68,7 @@ public partial class Player : Control
 
   public override void _Ready()
   {
-    _objectsLayer = GetNodeOrNull<Control>("ObjectsLayer");
+    _objectLayer = GetNodeOrNull<Control>("ObjectLayer");
     _hitFXLayer = GetNodeOrNull<Control>("HitFXLayer");
     _controllerRack = GetNodeOrNull<Node>("ControllerRack");
     _componentController = GetNodeOrNull<ComponentController>("GameplayUI");
@@ -372,7 +372,7 @@ public partial class Player : Control
       GD.PushError("[Player] Failed to initialize HitResponseController.");
 
 
-    if (IsInstanceValid(_objectsLayer)
+    if (IsInstanceValid(_objectLayer)
         && IsInstanceValid(_audioController)
         && IsInstanceValid(_groupController)
         && IsInstanceValid(_themeController)
@@ -380,7 +380,7 @@ public partial class Player : Control
     )
     {
       _windowController?.Initialize(
-        _objectsLayer, _chartData.Windows, _audioController,
+        _objectLayer, _chartData.Windows, _audioController,
         _groupController, _themeController, _noteController
       );
       _windowController?.SetWindowMode(WindowMode.InGame);
