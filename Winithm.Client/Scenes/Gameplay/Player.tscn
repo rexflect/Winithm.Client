@@ -46,10 +46,15 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
+[node name="InnerShaderLayer" type="Control" parent="." unique_id=878962880]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
 [node name="GameplayUI" parent="." unique_id=1473560799 instance=ExtResource("1_dwjgf")]
 layout_mode = 1
 
-[node name="ShaderLayer" type="Control" parent="." unique_id=639596532]
+[node name="OutterShaderLayer" type="Control" parent="." unique_id=639596532]
 material = SubResource("ShaderMaterial_35gda")
 layout_mode = 1
 anchors_preset = 15

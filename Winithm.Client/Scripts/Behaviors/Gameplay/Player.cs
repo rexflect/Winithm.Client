@@ -42,6 +42,7 @@ public partial class Player : Control
   private HitResponseController? _hitResponseController;
   private GroupController? _groupController;
   private ThemeChannelController? _themeController;
+  private OverlayController? _overlayController;
 
   // ── Client controllers ───────────────────────────────────────────────────────
 
@@ -142,6 +143,7 @@ public partial class Player : Control
 
     _noteController?.Update(currentBeat);
     _noteController?.SetNoteHighlightSimulation(NoteHighLightSimulation);
+    _overlayController?.Update(currentBeat);
 
     double length = _audioController.LevelLength;
 
@@ -243,6 +245,9 @@ public partial class Player : Control
 
     _windowController = new WindowController() { Name = "WindowController" };
     _controllerRack?.AddChild(_windowController);
+    
+    _overlayController = new OverlayController() { Name = "OverlayController" };
+    _controllerRack?.AddChild(_overlayController);
 
     _hitController = new HitController() { Name = "HitController" };
     _controllerRack?.AddChild(_hitController);
@@ -389,6 +394,16 @@ public partial class Player : Control
     }
     else
       GD.PushError("[Player] Failed to initialize WindowController.");
+
+    if (IsInstanceValid(_audioController) && IsInstanceValid(_objectLayer))
+    {
+      _overlayController?.Initialize(
+        GetNodeOrNull<Control>("OutterShaderLayer") ?? _objectLayer,
+        GetNodeOrNull<Control>("InnerShaderLayer") ?? _objectLayer,
+        _chartData.Overlays,
+        _audioController
+      );
+    }
 
     _componentController?.Initialize(
       _chartData.Components, metronome,
