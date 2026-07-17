@@ -2,6 +2,11 @@
 
 [ext_resource type="PackedScene" uid="uid://cgmiyt6dy1hid" path="res://Winithm.Core/Scenes/GameplayUI.tscn" id="1_dwjgf"]
 [ext_resource type="FontFile" uid="uid://c0iwxwt13dk8u" path="res://Winithm.Core/Resources/Fonts/Quicksand.ttf" id="2_byqyu"]
+[ext_resource type="Shader" uid="uid://dgbjk10kactoo" path="res://Winithm.Core/Resources/Shaders/Gameplay/Grayscale.gdshader" id="3_yfukg"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_35gda"]
+shader = ExtResource("3_yfukg")
+shader_parameter/Amount = 1.0
 
 [node name="Player" type="Control" unique_id=944133150]
 layout_mode = 3
@@ -45,6 +50,7 @@ mouse_filter = 2
 layout_mode = 1
 
 [node name="ShaderLayer" type="Control" parent="." unique_id=639596532]
+material = SubResource("ShaderMaterial_35gda")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

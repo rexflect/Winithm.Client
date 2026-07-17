@@ -266,7 +266,6 @@ public partial class Player : Control
 
     // ── Wire Input to HitController using Method Groups ───────────────────────
     // Routing validated hardware events directly to the evaluator.
-    _inputController.OnFocusKeyPressed += _hitController.HandleFocusClear;
     _inputController.OnFocusInput += _hitController.HandleFocusInput;
     _inputController.OnCloseInput += _hitController.HandleCloseInput;
     _inputController.OnNormalKeyPressed += _hitController.OnNormalKeyPressed;

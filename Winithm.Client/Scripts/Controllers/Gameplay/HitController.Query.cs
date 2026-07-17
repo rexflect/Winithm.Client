@@ -36,8 +36,6 @@ public partial class HitController
 
       if (state is null) continue;
 
-      if (state.WindowVisual.UnFocus) continue;
-
       foreach (var sideEntry in state.WindowData.Notes)
       {
         int cursor = state.EvalCursors[sideEntry.Key];
@@ -145,8 +143,6 @@ public partial class HitController
     }
 
     if (!_noteController.WindowStates.TryGetValue(windowId, out var state)) return null;
-
-    if (state.WindowVisual.UnFocus) return null;
 
     double missWindowMs = Constants.HitResult.TimmingWindowMs[HitResultType.Miss];
 

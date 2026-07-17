@@ -78,19 +78,6 @@ public partial class HitController : Node
     ProcessSingleHit(currentBeat);
   }
 
-  /// <summary>Called when Focus key is pressed to clear focusable state.</summary>
-  public void HandleFocusClear(InputEventMouseButton mouseButtonEvent)
-  {
-    if (!IsInstanceValid(_audioController))
-    {
-      GD.PushWarning("[HitController] _audioController is not initialized!");
-      return;
-    }
-
-    double currentBeat = _audioController?.CurrentBeat ?? 0;
-    EndAllActiveFocusable(currentBeat);
-  }
-
   public void HandleFocusInput(string windowId)
   {
     if (!IsInstanceValid(_audioController)) return;
@@ -199,7 +186,7 @@ public partial class HitController : Node
 
     // Focus miss → make the window focusable
     if (note.Type == NoteType.Focus)
-      _windowController.AddStartFocusable(windowId, note.StartBeat.AbsoluteValue);
+      _windowController.AddMissFocusPeriod(windowId, note.StartBeat.AbsoluteValue);
 
     // Close miss → make the window unresponsive
     if (note.Type == NoteType.Close)
@@ -439,23 +426,5 @@ public partial class HitController : Node
         OnMiss?.Invoke(windowId, result);
       }
     }
-  }
-
-  /// <summary>
-  /// Ends focusable state on all windows that are currently in a focusable period.
-  /// Called when Left Shift is pressed regardless of whether Focus notes were hit.
-  /// </summary>
-  private void EndAllActiveFocusable(double currentBeat)
-  {
-    if (!IsInstanceValid(_windowController))
-    {
-      GD.PushWarning("[HitController] _windowController is not initialized!");
-      return;
-    }
-
-    // Iterate all active windows and end focusable state on those currently in a period.
-    foreach (var entry in _windowController.GetActiveWindowIds())
-      if (_windowController.IsFocusableAt(entry, currentBeat))
-        _windowController.AddEndFocusable(entry, currentBeat);
   }
 }

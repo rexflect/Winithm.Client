@@ -12,7 +12,6 @@ public partial class InputController : Node
 {
   public bool IsInputEnabled { get; set; } = true;
 
-  public event Action<InputEventMouseButton>? OnFocusKeyPressed;
   public event Action<string>? OnFocusInput;
   public event Action<string>? OnCloseInput;
   public event Action<InputEventKey>? OnNormalKeyPressed;
@@ -71,11 +70,7 @@ public partial class InputController : Node
 
     if (@event is InputEventMouseButton mouseButtonEvent)
     {
-      if (mouseButtonEvent.ButtonIndex == MouseButton.Middle && mouseButtonEvent.Pressed)
-      {
-        OnFocusKeyPressed?.Invoke(mouseButtonEvent);
-      }
-      else if (mouseButtonEvent.ButtonIndex == MouseButton.Left)
+      if (mouseButtonEvent.ButtonIndex == MouseButton.Left)
       {
         if (mouseButtonEvent.Pressed)
         {
