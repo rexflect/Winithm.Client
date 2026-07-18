@@ -42,6 +42,8 @@ public partial class Player : Control
   private Label? _readyLabel;
   private TextureRect? _backgroundTexRect;
   private Node? _desktopCaster;
+  private Texture2D? _desktopTextureRef;
+  private AtlasTexture? _desktopAtlasTexture;
   private Label? _debug;
 
   // ── Core controllers ─────────────────────────────────────────────────────────

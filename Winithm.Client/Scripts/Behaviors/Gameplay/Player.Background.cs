@@ -37,7 +37,10 @@ public partial class Player
         var desktopTexture = (Texture2D?)(GodotObject?)_desktopCaster?.Call("get_texture");
         if (desktopTexture != null)
         {
-          _backgroundTexRect.Texture = new AtlasTexture { Atlas = desktopTexture };
+          _desktopTextureRef = desktopTexture; // Prevent GC collection
+          _desktopAtlasTexture ??= new AtlasTexture();
+          _desktopAtlasTexture.Atlas = desktopTexture;
+          _backgroundTexRect.Texture = _desktopAtlasTexture;
           UpdateDesktopCaptureRegion();
         }
         break;

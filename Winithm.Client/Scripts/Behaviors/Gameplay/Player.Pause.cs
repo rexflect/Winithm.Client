@@ -169,6 +169,12 @@ public partial class Player
       return;
     }
 
+    if (_windowDesktopManager?.HasWindow(PauseWindow.WINDOW_ID) ?? false)
+    {
+      _windowDesktopManager.FocusWindow(PauseWindow.WINDOW_ID);
+      return;
+    }
+
     _timeAtPause = _audioController.CurrentTime;
     _audioController.Pause();
 
@@ -222,7 +228,8 @@ public partial class Player
       _windowDesktopManager?.SetMainGameClickThrough(false);
       GetWindow().GrabFocus();
       _pausePhase = PausePhase.Idle;
-      RestartLevel();
+      
+      CallDeferred(nameof(RestartLevel));
 
       // Restore background if needed
       if (BackgroundMode == BackgroundMode.Desktop || BackgroundMode == BackgroundMode.Illustration)

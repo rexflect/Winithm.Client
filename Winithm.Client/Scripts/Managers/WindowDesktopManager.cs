@@ -83,7 +83,10 @@ public partial class WindowDesktopManager : CanvasLayer
     if (!_windows.Remove(id, out var window)) return;
 
     window.Hide();
-    window.QueueFree();
+    if (IsInstanceValid(window))
+    {
+      window.QueueFree();
+    }
   }
 
   /// <summary>
