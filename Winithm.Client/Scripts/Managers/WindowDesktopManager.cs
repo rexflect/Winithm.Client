@@ -49,7 +49,6 @@ public partial class WindowDesktopManager : CanvasLayer
     window.Transient = true;
     window.TransientToFocused = true;
     window.Exclusive = true;
-    window.ForceNative = true;
 
     // Preserve the design size before scaling for ContentScale
     var designSize = window.Size;
