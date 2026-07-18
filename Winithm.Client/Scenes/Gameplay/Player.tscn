@@ -1,7 +1,12 @@
 [gd_scene format=3 uid="uid://ddn2g8cglw2th"]
 
+[ext_resource type="Shader" uid="uid://ctfjan2eowew3" path="res://Winithm.Client/Resources/Shaders/Gameplay/BackgroundBrightness.gdshader" id="1_1xxoo"]
 [ext_resource type="PackedScene" uid="uid://cgmiyt6dy1hid" path="res://Winithm.Core/Scenes/GameplayUI.tscn" id="1_dwjgf"]
 [ext_resource type="FontFile" uid="uid://c0iwxwt13dk8u" path="res://Winithm.Core/Resources/Fonts/Quicksand.ttf" id="2_byqyu"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yfukg"]
+shader = ExtResource("1_1xxoo")
+shader_parameter/brightness = 0.35
 
 [node name="Player" type="Control" unique_id=944133150]
 layout_mode = 3
@@ -14,7 +19,11 @@ mouse_filter = 2
 
 [node name="ControllerRack" type="Node" parent="." unique_id=563799367]
 
-[node name="CaptureUserDesktop" type="TextureRect" parent="." unique_id=1897512421]
+[node name="DesktopCaster" type="DesktopCaster" parent="." unique_id=699219954]
+fps_mode = 1
+
+[node name="Background" type="TextureRect" parent="." unique_id=1897512421]
+material = SubResource("ShaderMaterial_yfukg")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

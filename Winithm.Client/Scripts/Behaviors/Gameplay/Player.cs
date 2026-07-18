@@ -11,6 +11,13 @@ using Winithm.Client.Managers;
 
 namespace Winithm.Client.Behaviors.Gameplay;
 
+public enum BackgroundMode
+{
+  None,
+  Illustration,
+  Desktop,
+}
+
 /// <summary>
 /// Main gameplay orchestrator. Creates and wires all core controllers,
 /// drives the game loop, and routes input to HitController.
@@ -23,6 +30,8 @@ public partial class Player : Control
   [Export] public float NoteSize = 1f;
   [Export] public float NoteSpeed = 1f;
   [Export] public bool NoteHighLightSimulation = false;
+  [Export] public BackgroundMode BackgroundMode = BackgroundMode.Desktop;
+  [Export] public float BackgroundBrightness = 0.35f;
 
   // ── Scene nodes ──────────────────────────────────────────────────────────────
 
@@ -31,6 +40,8 @@ public partial class Player : Control
   private Control? _hitFXLayer;
   private ColorRect? _readySign;
   private Label? _readyLabel;
+  private TextureRect? _backgroundTexRect;
+  private Node? _desktopCaster;
   private Label? _debug;
 
   // ── Core controllers ─────────────────────────────────────────────────────────
@@ -74,6 +85,9 @@ public partial class Player : Control
     _controllerRack = GetNodeOrNull<Node>("ControllerRack");
     _componentController = GetNodeOrNull<ComponentController>("GameplayUI");
 
+    _backgroundTexRect = GetNodeOrNull<TextureRect>("Background");
+    _desktopCaster = GetNodeOrNull<Node>("DesktopCaster");
+
     _readySign = GetNodeOrNull<ColorRect>("ReadySign");
     _readyLabel = _readySign?.GetNodeOrNull<Label>("ReadyLabel");
 
@@ -92,10 +106,16 @@ public partial class Player : Control
 
     InitializeControllers();
     LoadDemoLevel();
+
+    SetupBackground();
   }
 
   public override void _Process(double delta)
   {
+    // Only continuously capture desktop if we are in Desktop mode and not rewinding/paused
+    if (BackgroundMode == BackgroundMode.Desktop && _pausePhase != PausePhase.Rewinding)
+      UpdateDesktopCaptureRegion();
+
     if (_audioController is null || _audioController.Metronome is null)
     {
       GD.PushWarning("[Player] _audioController or _audioController.Metronome is not initialized!");

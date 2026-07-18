@@ -187,6 +187,13 @@ public partial class Player
     _pausePhase = PausePhase.Rewinding;
     _componentController?.DrainPauseBar();
 
+    // Disable background temporarily when paused
+    if (BackgroundMode == BackgroundMode.Desktop || BackgroundMode == BackgroundMode.Illustration)
+    {
+      GetWindow().ExcludeFromCapture = false;
+      DisableBackground();
+    }
+
     // Allow main game window to be completely click-through to the OS desktop
     _windowDesktopManager?.SetMainGameClickThrough(true);
 
@@ -216,6 +223,10 @@ public partial class Player
       GetWindow().GrabFocus();
       _pausePhase = PausePhase.Idle;
       RestartLevel();
+
+      // Restore background if needed
+      if (BackgroundMode == BackgroundMode.Desktop || BackgroundMode == BackgroundMode.Illustration)
+        SetupBackground();
     };
 
     pauseWindow.OnQuit = () =>
@@ -241,6 +252,10 @@ public partial class Player
     _pausePhase = PausePhase.Recovering;
     _audioController.Resume();
     _componentController?.FillPauseBar();
+
+    // Restore background after resuming
+    if (BackgroundMode == BackgroundMode.Desktop || BackgroundMode == BackgroundMode.Illustration)
+      SetupBackground();
 
     // Apply cooldown equal to recovery duration (= rewind distance at 1× speed).
     _pauseCooldown = (float)_rewindDistance;
