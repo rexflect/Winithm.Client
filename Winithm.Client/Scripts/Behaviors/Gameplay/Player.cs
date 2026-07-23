@@ -124,7 +124,6 @@ public partial class Player : Control
       return;
     }
 
-    if (!IsReadied) return;
 
     // Decrement pause cooldown.
     if (_pauseCooldown > 0)
@@ -154,6 +153,8 @@ public partial class Player : Control
           + $"FPS: {Engine.GetFramesPerSecond()} | Frame: {delta * 1000:F2}ms | Vsync: {(DisplayServer.WindowGetVsyncMode() == DisplayServer.VSyncMode.Enabled ? "On" : "Off")}";
       }
     }
+    
+    if (!IsReadied) return;
 
     var displaySize = DisplayServer.WindowGetSize();
 
