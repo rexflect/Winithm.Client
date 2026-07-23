@@ -124,6 +124,8 @@ public partial class Player : Control
       return;
     }
 
+    if (!IsReadied) return;
+
     // Decrement pause cooldown.
     if (_pauseCooldown > 0)
       _pauseCooldown -= (float)delta;
